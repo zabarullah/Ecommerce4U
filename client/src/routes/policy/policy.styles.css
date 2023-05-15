@@ -1,0 +1,7 @@
+.title {
+    box-shadow: 0 8px 6px -6px gray;
+    --webkit-box-shadow: 0 8px 6px -6px gray;
+    border-bottom: solid rgb(150, 150, 150) !important;
+    display:inline;
+}
+

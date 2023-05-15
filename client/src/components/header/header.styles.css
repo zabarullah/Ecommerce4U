@@ -1,0 +1,29 @@
+/* bootstrap navbar css changes*/
+
+.navbar {
+    font-family: 'Poppins', sans-serif; 
+    font-size: 17px;
+    line-height: 26px;
+    text-transform: uppercase;
+    box-shadow: 0 8px 6px -6px gray;
+    --webkit-box-shadow: 0 8px 6px -6px gray;
+    border-bottom: solid rgb(150, 150, 150) !important;
+  }
+  
+  .nav-link {
+    font-weight: 300 !important;
+    color: white !important;
+  }
+  
+  .active {
+    border-bottom: 2px solid white;
+    font-weight: 600 !important; 
+  }
+  
+  .navbar-brand {
+    font-weight: 700;
+    font-family: 'roboto', 'sans-serif';
+    color: white !important;
+    letter-spacing: 3px;
+    
+  }

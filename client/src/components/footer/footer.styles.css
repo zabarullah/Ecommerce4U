@@ -1,0 +1,15 @@
+.footer-link {
+    text-decoration: none;
+    color: white;
+    padding: 10px;
+}
+
+.footer-link:hover {
+    border-bottom: 2px solid white;
+}
+
+.footer-shadow {
+    box-shadow: 0 -8px 6px -6px gray;
+    --webkit-box-shadow: 0 -8px 6px -6px gray;
+    border-top: solid rgb(150, 150, 150) !important;
+}
