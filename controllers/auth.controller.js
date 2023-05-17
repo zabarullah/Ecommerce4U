@@ -94,5 +94,8 @@ export const loginController = async (req, res) => {
 //protected route testing controller
 
 export const protectedRouteController = (req, res) => {
-    res.send('Protected Route accessed')
+    res.status(200).json({
+        ok: true,
+        message: 'Protected Route accessed',
+    })
 };

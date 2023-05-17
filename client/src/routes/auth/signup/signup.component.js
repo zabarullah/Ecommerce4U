@@ -1,15 +1,16 @@
-import React, { useContext, useState } from 'react'
-import Layout from '../../../components/layout/layout.component'
-import './signup.styles.css'
-import { FormContext } from '../../../context/form.context'
-import { useNavigate } from 'react-router-dom'
+import React, { useContext} from 'react';
+import Layout from '../../../components/layout/layout.component';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { FormContext } from '../../../context/form.context';
+import { AlertContext } from '../../../context/alert.context';
+import './signup.styles.css';
 
 const SignUp = () => {
-  const { name, setName, email, setEmail, password, setPassword, phone, setPhone, address, setAddress } = useContext(FormContext);
-  const navigate = useNavigate();
-  const [alert, setAlert] = useState(null);
-
+    const { name, setName, email, setEmail, password, setPassword, phone, setPhone, address, setAddress } = useContext(FormContext);
+    const { setAlert } = useContext(AlertContext); // to set the Alert type and message (alert displayed inside the Layout component)
+    const navigate = useNavigate();
+    
     const handleInputChange = (e) => {
       const { name, value } = e.target;
       switch (name) {
@@ -31,12 +32,7 @@ const SignUp = () => {
         default:
           break;
       }
-      // if (name) {
-      //   // This will simply be similar to manually typing setName(e.target.value) on each onChange event handler)
-      //   const setter = `set${name.charAt(0).toUpperCase()}${name.slice(1)}`;
-      //   eval(`${setter}('${value}')`);
-      // }
-      console.log(`Field ${name}`, value);
+      // console.log(`Field ${name}`, value);
     };
 
     const handleSubmit = async (e) => {
@@ -52,9 +48,9 @@ const SignUp = () => {
           });
         
           if (res && res.data.success) {
-            console.log(res.data);
+            // console.log(res.data);
             setAlert({ type: 'success', message: res.data.message });
-            navigate("/login");
+            navigate('/login', { state: { type: 'success', message: res.data.message } });
           } else {
             setAlert({ type: 'error', message: res.data.message });
           };
@@ -66,10 +62,9 @@ const SignUp = () => {
       
 
   return (
-    <Layout title="Sign Up - Ecommerce 4 U" alert={alert} setAlert={setAlert}>
+    <Layout title="Sign Up - Ecommerce 4 U">
        <div className="signUp">
         <h1>Sign Up</h1>
-        {/* {alert && <Alert type={alert.type} message={alert.message} onClose={() => handleAlertClose(setAlert)} />} */}
         <form onSubmit={handleSubmit}>
           <div className="mb-3 form-floating">
             <input type="text" className="form-control" id="name" placeholder='Name' name="name" value={name} onChange={handleInputChange} required />

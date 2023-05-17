@@ -10,4 +10,8 @@ router.post('/signup',  signupController);
 router.post('/login', loginController);
 router.get('/protected', requireSignIn, isAdmin, protectedRouteController);
 
+//protected routed for user authenticated routes
+router.get('/user-auth', requireSignIn, protectedRouteController);
+
+
 export default router;

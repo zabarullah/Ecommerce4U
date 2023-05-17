@@ -1,9 +1,25 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useContext } from 'react'
 import { NavLink, Link } from 'react-router-dom';
+import { useAuth } from '../../context/auth.context';
 import { FaShopify } from 'react-icons/fa';
 import './header.styles.css';
+import { AlertContext } from '../../context/alert.context';
 
 const Header = () => {
+  const [auth, setAuth] = useAuth();
+  const { setAlert } = useContext(AlertContext); // to set the Alert type and message (alert displayed inside the Layout component)
+  
+  //this will help reset the auth state back to default (user not logged in) when we use this helper function on the onChange event handler in link Logout
+  const handleLogout = () => {
+    setAuth({
+        ...auth,
+        user: null, 
+        token: ""
+    });
+    localStorage.removeItem('auth');
+    setAlert({ type: 'success', message: "Logged out Successfully" });
+  };
+
   return (
     <Fragment>
       <nav className="navbar navbar-expand-lg bg-info">
@@ -20,12 +36,24 @@ const Header = () => {
                 <li className="nav-item">
                   <NavLink to='/category' className="nav-link">Category</NavLink>
                 </li>
-                <li className="nav-item">
-                  <NavLink to='/signup' className="nav-link">Sign Up</NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink to='/login' className="nav-link">Login</NavLink>
-                </li>
+                {
+                  !auth.user? (
+                    <>
+                    <li className="nav-item">
+                    <NavLink to='/signup' className="nav-link">Sign Up</NavLink>
+                    </li>
+                    <li className="nav-item">
+                      <NavLink to='/login' className="nav-link">Login</NavLink>
+                    </li>
+                    </>
+                  ) : (
+                    <>
+                    <li className="nav-item">
+                    <NavLink to='/' className="nav-link" onClick={handleLogout}>Logout</NavLink>
+                    </li>
+                    </>
+                  )
+                }
                 <li className="nav-item">
                   <NavLink to='/cart' className="nav-link">Cart (0)</NavLink>
                 </li>

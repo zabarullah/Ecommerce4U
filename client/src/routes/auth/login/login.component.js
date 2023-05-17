@@ -1,14 +1,18 @@
-import React, { useContext, useState } from 'react'
-import Layout from '../../../components/layout/layout.component'
-import './login.styles.css'
-import { FormContext } from '../../../context/form.context'
-import { useNavigate } from 'react-router-dom'
+import React, { useContext} from 'react';
+import Layout from '../../../components/layout/layout.component';
+import './login.styles.css';
+import { FormContext } from '../../../context/form.context';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { AlertContext } from '../../../context/alert.context';
+import { useAuth } from '../../../context/auth.context';
 
 const Login = () => {
   const { email, setEmail, password, setPassword } = useContext(FormContext);
+  const { setAlert } = useContext(AlertContext);// to set the Alert type and message (alert displayed inside the Layout component)
+  const [auth, setAuth] = useAuth();
+
   const navigate = useNavigate();
-  const [alert, setAlert] = useState(null);
 
     const handleInputChange = (e) => {
       const { name, value } = e.target;
@@ -23,7 +27,7 @@ const Login = () => {
           break;
       }
 
-      console.log(`Field ${name}`, value);
+    //   console.log(`Field ${name}`, value);
     };
 
     const handleSubmit = async (e) => {
@@ -36,9 +40,20 @@ const Login = () => {
           });
         
           if (res && res.data.success) {
-            console.log(res.data);
+            // console.log(res.data);
             setAlert({ type: 'success', message: res.data.message });
-            navigate("/");
+            setAuth({
+                ...auth,
+                user: res.data.user,
+                token: res.data.token
+            })
+            //state has been passed in to navigate function, so that it can be used by the Alert component to alert using this data when page navigates to another page
+            navigate("/", { 
+                state: { 
+                    type: 'success', 
+                    message: res.data.message 
+                } 
+            });
           } else {
             setAlert({ type: 'error', message: res.data.message });
           };
@@ -53,7 +68,6 @@ const Login = () => {
     <Layout title="Login - Ecommerce 4 U" alert={alert} setAlert={setAlert}>
        <div className="login">
         <h1>Login</h1>
-        {/* {alert && <Alert type={alert.type} message={alert.message} onClose={() => handleAlertClose(setAlert)} />} */}
         <form onSubmit={handleSubmit}>
           <div className="mb-3 form-floating">
             <input type="email" className="form-control" id="email" placeholder='Email' name="email" value={email} onChange={handleInputChange} required  />
