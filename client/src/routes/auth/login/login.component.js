@@ -2,7 +2,7 @@ import React, { useContext} from 'react';
 import Layout from '../../../components/layout/layout.component';
 import './login.styles.css';
 import { FormContext } from '../../../context/form.context';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AlertContext } from '../../../context/alert.context';
 import { useAuth } from '../../../context/auth.context';
@@ -13,6 +13,7 @@ const Login = () => {
   const [auth, setAuth] = useAuth();
 
   const navigate = useNavigate();
+  const location = useLocation();
 
     const handleInputChange = (e) => {
       const { name, value } = e.target;
@@ -47,8 +48,8 @@ const Login = () => {
                 user: res.data.user,
                 token: res.data.token
             })
-            //state has been passed in to navigate function, so that it can be used by the Alert component to alert using this data when page navigates to another page
-            navigate("/", { 
+            //location.state will redirect to the page it came from if it exists otherwise to homepage, the location state is passed in the spinner component. The state has been passed in to navigate function, so that it can be used by the Alert component to alert using this data when page navigates to another page
+            navigate(location.state || "/", { 
                 state: { 
                     type: 'success', 
                     message: res.data.message 
