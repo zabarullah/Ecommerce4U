@@ -7,7 +7,7 @@ import { AlertContext } from '../../../context/alert.context';
 import './signup.styles.css';
 
 const SignUp = () => {
-    const { name, setName, email, setEmail, password, setPassword, phone, setPhone, address, setAddress } = useContext(FormContext);
+    const { name, setName, email, setEmail, password, setPassword, phone, setPhone, address, setAddress, memorableWord, setMemorableWord } = useContext(FormContext);
     const { setAlert } = useContext(AlertContext); // to set the Alert type and message (alert displayed inside the Layout component)
     const navigate = useNavigate();
     
@@ -29,6 +29,9 @@ const SignUp = () => {
         case 'address':
           setAddress(value);
           break;
+        case 'memorableWord':
+          setMemorableWord(value);
+          break;
         default:
           break;
       }
@@ -45,6 +48,7 @@ const SignUp = () => {
             password,
             phone,
             address,
+            memorableWord,
           });
         
           if (res && res.data.success) {
@@ -86,7 +90,13 @@ const SignUp = () => {
             <input type="password" className="form-control" id="password" placeholder='Password' name="password" value={password} onChange={handleInputChange} required  />
             <label htmlFor="exampleFormControlInput">Password</label>
           </div>
-          <button type="submit" className="btn btn-primary">Submit</button>
+          <div className="mb-3 form-floating">
+            <input type="password" className="form-control" id="memorableWord" placeholder='Memorable secret word' name="memorableWord" value={memorableWord} onChange={handleInputChange} required  />
+            <label htmlFor="exampleFormControlInput">Memorable Secret Word</label>
+          </div>
+          <div className="d-grid gap-2 col-12 mx-auto">
+            <button type="submit" className="btn btn-info text-white">Submit</button>
+          </div>
         </form>
 
        </div>

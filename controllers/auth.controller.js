@@ -5,8 +5,8 @@ import JWT  from 'jsonwebtoken';
 export const signupController = async (req, res) => {
     try {
         // Check if required fields are missing
-        const { name, email, password, address, phone } = req.body;
-        if (!name || !email || !password || !address || !phone) {
+        const { name, email, password, address, phone, memorableWord } = req.body;
+        if (!name || !email || !password || !address || !phone || !memorableWord) {
             return res.status(400).json({ message: 'required fields need to be completed' });
         };
         
@@ -22,7 +22,7 @@ export const signupController = async (req, res) => {
         // Register user
         const hashedPassword = await hashPassword(password);
         // save hashedPassword
-        const user = await new userModel({ name, email, password:hashedPassword, address, phone }).save();
+        const user = await new userModel({ name, email, password:hashedPassword, address, phone, memorableWord }).save();
         res.status(201).json({ 
             message: 'user created successfully', 
             success: true,
@@ -98,4 +98,40 @@ export const protectedRouteController = (req, res) => {
         ok: true,
         message: 'Protected Route accessed',
     })
+};
+
+//forgotton Password Controller
+export const forgotPasswordController = async (req, res) => {
+    try {
+        const { email, memorableWord, newpassword } =req.body;
+
+        if(!email || !memorableWord || !newpassword) {
+            res.status(400).json({message: 'All fields are required'});
+        };
+        // Validate the form input with the user from the database
+            // Grab the User from the database:
+        const user = await userModel.findOne({email,memorableWord});
+            // if user not found:
+        if(!user) {
+            return res.status(404).send({
+                success: false,
+                message: 'Wrong Email or Memorable Word'
+            })
+        };
+            //user found: hash the newPassword provided in the req.body:
+        const hashed = await hashPassword(newpassword);
+            //update the user on the database by its id with the hashed password
+        await userModel.findByIdAndUpdate(user._id, {password:hashed});
+        res.status(200).json({
+            success: true,
+            message: 'Password reset successfully'
+        })
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        success: false,
+        message: 'Something went wrong!',
+        error
+      })  
+    }
 };

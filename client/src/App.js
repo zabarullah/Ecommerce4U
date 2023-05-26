@@ -8,6 +8,7 @@ import SignUp from './routes/auth/signup/signup.component';
 import Login from './routes/auth/login/login.component';
 import Dashboard from './routes/user/dashboard.component';
 import PrivateRoute from './routes/private/privateRoute.component';
+import ForgotMyPassword from './routes/auth/forgotPassword/forgotPassword.component';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route exact path='/policy' element={<Policy />}/>
         <Route exact path='/signup' element={<SignUp />}/>
         <Route exact path='/login' element={<Login />}/>
+        <Route exact path='/forgot-my-password' element={<ForgotMyPassword />}/>
         <Route exact path='/*' element={<PageNotFound />}/>
       </Routes>
 

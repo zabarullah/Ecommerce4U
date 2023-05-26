@@ -10,6 +10,8 @@ export const FormProvider = ({ children }) => {
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [memorableWord, setMemorableWord] = useState('');
+  const [newpassword, setNewPassword] = useState('');
 
   const values = {
     name,
@@ -22,6 +24,10 @@ export const FormProvider = ({ children }) => {
     setPhone,
     password,
     setPassword,
+    memorableWord,
+    setMemorableWord,
+    newpassword,
+    setNewPassword
   };
 
   return (
