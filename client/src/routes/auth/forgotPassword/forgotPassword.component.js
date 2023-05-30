@@ -53,6 +53,10 @@ const ForgotMyPassword = () => {
                     path: "/"
                 } 
             });
+            // Clear the form fields
+            setEmail('');
+            setNewPassword('');
+            setMemorableWord('');            
           } else {
             setAlert({ type: 'error', message: res.data.message });
           };

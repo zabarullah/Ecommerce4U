@@ -57,6 +57,9 @@ const Login = () => {
                     message: res.data.message 
                 } 
             });
+            // Clear the form fields
+            setEmail('');
+            setPassword('');
           } else {
             setAlert({ type: 'error', message: res.data.message });
           };

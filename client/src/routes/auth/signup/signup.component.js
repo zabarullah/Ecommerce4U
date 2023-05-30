@@ -55,6 +55,14 @@ const SignUp = () => {
             // console.log(res.data);
             setAlert({ type: 'success', message: res.data.message });
             navigate('/login', { state: { type: 'success', message: res.data.message } });
+
+            // Clear the form fields
+            setName('');
+            setEmail('');
+            setPassword('');
+            setPhone('');
+            setAddress('');
+            setMemorableWord('');
           } else {
             setAlert({ type: 'error', message: res.data.message });
           };
