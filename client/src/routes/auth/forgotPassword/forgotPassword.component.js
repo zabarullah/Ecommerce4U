@@ -7,7 +7,7 @@ import axios from 'axios';
 import { AlertContext } from '../../../context/alert.context';
 
 const ForgotMyPassword = () => {
-  const { email, setEmail, memorableWord, setMemorableWord, newpassword, setNewPassword,  } = useContext(FormContext);
+  const { email, setEmail, memorableWord, setMemorableWord, newpassword, setNewPassword, setPassword } = useContext(FormContext);
   const { setAlert } = useContext(AlertContext);// to set the Alert type and message (alert displayed inside the Layout component)
 
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ const ForgotMyPassword = () => {
 
     const handleSubmit = async (e) => {
       e.preventDefault();
-      console.log({email, memorableWord, newpassword});
+    //   console.log({email, memorableWord, newpassword});
       
       try {
         const res = await axios.post("/api/v1/auth/forgot-my-password", {
@@ -56,6 +56,7 @@ const ForgotMyPassword = () => {
             // Clear the form fields
             setEmail('');
             setNewPassword('');
+            setPassword('');
             setMemorableWord('');            
           } else {
             setAlert({ type: 'error', message: res.data.message });

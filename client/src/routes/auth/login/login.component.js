@@ -49,7 +49,7 @@ const Login = () => {
                 user: res.data.user,
                 token: res.data.token
             })
-            console.log("Login Component state: ",location.state);
+            //console.log("Login Component state: ",location.state);
             //location.state will redirect to the page it came from if it exists otherwise to homepage, the location state is passed in the spinner component. The state has been passed in to navigate function, so that it can be used by the Alert component to alert using this data when page navigates to another page
             navigate(path || "/", { 
                 state: { 
