@@ -53,7 +53,9 @@ const Header = () => {
                         {auth?.user.name}
                       </NavLink>
                       <ul className="dropdown-menu nav-item bg-info">
-                        <li><NavLink to='/dashboard' className="nav-link">Dashboard</NavLink></li>
+                        <li><NavLink to={`/dashboard/${
+                          auth?.user?.role === 1 ? 'admin' : 'user'
+                          }`} className="nav-link">Dashboard</NavLink></li>
                         <li><NavLink to='/login' className="nav-link " onClick={handleLogout}>Logout</NavLink></li>
                       </ul>
                     </li>

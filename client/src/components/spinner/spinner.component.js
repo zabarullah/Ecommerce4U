@@ -4,7 +4,7 @@ import Layout from '../layout/layout.component';
 import { useAuth } from '../../context/auth.context';
 import { AlertContext } from '../../context/alert.context';
 
-const Spinner = () => {
+const Spinner = ( { path = "login" } ) => {
   const [auth] = useAuth();
   const { alert, setAlert } = useContext(AlertContext);
   const [timer, setTimer] = useState(10);
@@ -25,14 +25,14 @@ const Spinner = () => {
 
       return () => clearInterval(interval);
     } else {
-      navigate('/login', {
+      navigate(`/${path}`, {
         state: location.pathname,
       });
     }
-  }, [timer, navigate]);
+  }, [timer, navigate, location, path]);
 
   const handleNavigateToLogin = () => {
-    navigate('/login', {
+    navigate(`/${path}`, {
       state: location.pathname,
     });
   };
@@ -48,7 +48,7 @@ const Spinner = () => {
           <p>
             Take me to{' '}
             <a href="#!" onClick={handleNavigateToLogin}>
-              Login page 
+              {`${path === '/' ? 'Login' : 'Homepage'}`}
             </a>
             {' '} now
           </p>

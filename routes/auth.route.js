@@ -11,8 +11,10 @@ router.post('/login', loginController);
 router.post('/forgot-my-password', forgotPasswordController)
 router.get('/protected', requireSignIn, isAdmin, protectedRouteController);
 
-//protected routed for user authenticated routes
+//protected route for user authenticated routes
 router.get('/user-auth', requireSignIn, protectedRouteController);
+//protected route for admin authenticated routes
+router.get('/admin-auth', requireSignIn, isAdmin, protectedRouteController);
 
 
 export default router;
