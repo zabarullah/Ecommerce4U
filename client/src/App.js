@@ -11,6 +11,11 @@ import PrivateRoute from './routes/private/privateRoute.component';
 import ForgotMyPassword from './routes/auth/forgotPassword/forgotPassword.component';
 import AdminRoute from './routes/admin/adminRoute.component';
 import AdminDashboard from './routes/admin/admin.component';
+import NewCategory from './routes/admin/newCategory.component';
+import NewProduct from './routes/admin/newProduct.component';
+import Users from './routes/admin/users.component';
+import Profile from './routes/user/profile';
+import Orders from './routes/user/orders';
 
 function App() {
   return (
@@ -19,9 +24,14 @@ function App() {
         <Route exact path='/' element={<HomePage />}/>
         <Route exact path='/dashboard' element={<PrivateRoute />}> {/*protected Route */}
           <Route exact path='user' element={<Dashboard />}/>
+            <Route exact path='user/profile' element={<Profile />}/>
+            <Route exact path='user/orders' element={<Orders />}/>
         </Route>
         <Route exact path='/dashboard' element={<AdminRoute />}> {/*protected Route */}
           <Route exact path='admin' element={<AdminDashboard />}/>
+            <Route exact path='admin/new-category' element={<NewCategory />}/>
+            <Route exact path='admin/new-product' element={<NewProduct />}/>
+            <Route exact path='admin/users' element={<Users />}/>
         </Route>
         <Route exact path='/aboutus' element={<AboutUs />}/>
         <Route exact path='/contact' element={<Contact />}/>
