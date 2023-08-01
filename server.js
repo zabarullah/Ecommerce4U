@@ -3,7 +3,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import morgan from 'morgan';
-import authRoutes from './routes/auth.route.js'
+import authRoutes from './routes/auth.route.js';
+import categoryRoutes from './routes/category.route.js';
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use(morgan('dev'));
 
 // Routes
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/category', categoryRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
