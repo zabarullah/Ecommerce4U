@@ -5,6 +5,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import authRoutes from './routes/auth.route.js';
 import categoryRoutes from './routes/category.route.js';
+import productRoutes from './routes/product.routes.js';
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use(morgan('dev'));
 // Routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/category', categoryRoutes);
+app.use('/api/v1/product', productRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
