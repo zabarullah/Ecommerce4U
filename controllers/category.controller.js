@@ -117,7 +117,7 @@ export const singleCategoryController = async (req, res) => {
     }
 };
 
-//Delete Single catagory
+//Delete Single category
 export const deleteCategoryController = async (req, res) => {
     try {
         const {id} = req.params;

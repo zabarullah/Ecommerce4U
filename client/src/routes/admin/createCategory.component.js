@@ -2,16 +2,16 @@ import React from 'react'
 import Layout from '../../components/layout/layout.component';
 import AdminMenu from '../../components/adminMenu/adminMenu.component';
 
-const NewCategory = () => {
+const CreateCategory = () => {
   return (
-    <Layout title={"Dashboard- New Category"}>
+    <Layout title={"Dashboard- Create Category"}>
         <div className="container-fluid m-3 p-3">
             <div className="row">
                 <div className="col-md-3">
                     <AdminMenu />
                 </div>
                 <div className="col-md-9">
-                    <h1>New Category Page</h1>
+                    <h1>Create Category Page</h1>
                 </div>
             </div>
         </div>
@@ -19,4 +19,4 @@ const NewCategory = () => {
   )
 }
 
-export default NewCategory;
+export default CreateCategory;

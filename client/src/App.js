@@ -11,8 +11,8 @@ import PrivateRoute from './routes/private/privateRoute.component';
 import ForgotMyPassword from './routes/auth/forgotPassword/forgotPassword.component';
 import AdminRoute from './routes/admin/adminRoute.component';
 import AdminDashboard from './routes/admin/admin.component';
-import NewCategory from './routes/admin/newCategory.component';
-import NewProduct from './routes/admin/newProduct.component';
+import CreateCategory from './routes/admin/createCategory.component';
+import CreateProduct from './routes/admin/createProduct.component';
 import Users from './routes/admin/users.component';
 import Profile from './routes/user/profile';
 import Orders from './routes/user/orders';
@@ -29,8 +29,8 @@ function App() {
         </Route>
         <Route exact path='/dashboard' element={<AdminRoute />}> {/*protected Route */}
           <Route exact path='admin' element={<AdminDashboard />}/>
-            <Route exact path='admin/new-category' element={<NewCategory />}/>
-            <Route exact path='admin/new-product' element={<NewProduct />}/>
+            <Route exact path='admin/create-category' element={<CreateCategory />}/>
+            <Route exact path='admin/create-product' element={<CreateProduct />}/>
             <Route exact path='admin/users' element={<Users />}/>
         </Route>
         <Route exact path='/aboutus' element={<AboutUs />}/>

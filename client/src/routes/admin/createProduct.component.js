@@ -2,16 +2,16 @@ import React from 'react'
 import Layout from '../../components/layout/layout.component';
 import AdminMenu from '../../components/adminMenu/adminMenu.component';
 
-const NewProduct = () => {
+const CreateProduct = () => {
   return (
-    <Layout title={"Dashboard- New Product"}>
+    <Layout title={"Dashboard- Create Product"}>
         <div className="container-fluid m-3 p-3">
             <div className="row">
                 <div className="col-md-3">
                     <AdminMenu />
                 </div>
                 <div className="col-md-9">
-                    <h1>New Product Page</h1>
+                    <h1>Create Product Page</h1>
                 </div>
             </div>
         </div>
@@ -19,4 +19,4 @@ const NewProduct = () => {
   )
 }
 
-export default NewProduct;
+export default CreateProduct;
