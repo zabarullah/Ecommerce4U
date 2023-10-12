@@ -16,14 +16,14 @@ export const createCategoryController = async (req, res) => {
         if (exisitingCategory) {
             return res.status(409).json({
                 success: false,
-                message: 'Category Already Exists'        
+                message: `"${name}" Category Already Exists`        
             });            
         }
         // if above conditions are all false then save the new category after it has been slugifed and send status message and category for the frontend:
         const category = await new categoryModel({name, slug:slugify(name)}).save();
         res.status(201).json({
             success: true,
-            message: 'Category Created Successfully',
+            message: `${name} Category Created Successfully`,
             category
         })
 
@@ -57,7 +57,7 @@ export const updateCategoryController = async (req, res) => {
         if (exisitingCategory) {
             return res.status(409).json({
                 success: false,
-                message: 'Category Already Exists'        
+                message: `"${name}" Category Already Exists`         
             });            
         }        
 
@@ -65,7 +65,7 @@ export const updateCategoryController = async (req, res) => {
         const category = await categoryModel.findByIdAndUpdate(id, {name, slug:slugify(name)}, {new:true});
         res.status(200).json({
             success: true,
-            message:'Category Updated Successfully',
+            message:`Category Updated Successfully to ${name}`,
             category
         })        
     } catch (error) {
@@ -84,7 +84,7 @@ export const categoryController = async (req, res) => {
         const category = await categoryModel.find({});   
         res.status(200).json({
             success: true,
-            message: 'All Categories List',
+            message: 'All Categories List Loaded',
             category
         })     
     } catch (error) {

@@ -5,11 +5,11 @@ import { categoryController, createCategoryController, deleteCategoryController,
 const router = express.Router();
 
 // Routing
-router.post('/create-category', requireSignIn, isAdmin, createCategoryController);
+router.post('/create-category',  requireSignIn, isAdmin, createCategoryController); // createCategory works with these two middlewares removed
 router.put('/update-category/:id', requireSignIn, isAdmin, updateCategoryController);
 router.get('/get-category',  categoryController);
 router.get('/single-category/:slug',  singleCategoryController);
-router.delete('/delete-cateogry/:id', requireSignIn, isAdmin, deleteCategoryController)
+router.delete('/delete-category/:id', requireSignIn, isAdmin, deleteCategoryController)
 
 
 
