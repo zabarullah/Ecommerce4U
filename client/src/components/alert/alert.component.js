@@ -1,6 +1,9 @@
 import React, { useContext, useEffect } from 'react';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import './alert.styles.css'
+
 import { AlertContext } from '../../context/alert.context';
 
 const Alert = () => {
@@ -27,7 +30,7 @@ const Alert = () => {
   };
 
   return (
-    <div className={`alert alert-${type === 'error' ? 'danger' : type} position-fixed p-2 rounded mb-3 start-50 translate-middle-x`} role="alert" style={{ display: 'inline-flex', width: 'auto', marginTop: '-60px' }}>
+    <div className={`alert-container alert alert-${type === 'error' ? 'danger' : type}  p-2 rounded mb-3 `} role="alert" style={{ display: 'inline-flex', width: 'auto', marginTop: '-60px' }}>
       <div className="alert-message d-flex align-items-center my-2">
         {type === 'success' ? (
           <FontAwesomeIcon icon={faCheckCircle} className="me-2" />

@@ -16,6 +16,7 @@ import CreateProduct from './routes/admin/createProduct.component';
 import Users from './routes/admin/users.component';
 import Profile from './routes/user/profile';
 import Orders from './routes/user/orders';
+import Products from './routes/admin/products.component';
 
 function App() {
   return (
@@ -32,6 +33,8 @@ function App() {
             <Route exact path='admin/create-category' element={<CreateCategory />}/>
             <Route exact path='admin/create-product' element={<CreateProduct />}/>
             <Route exact path='admin/users' element={<Users />}/>
+            <Route exact path='admin/products' element={<Products />}/>
+
         </Route>
         <Route exact path='/aboutus' element={<AboutUs />}/>
         <Route exact path='/contact' element={<Contact />}/>

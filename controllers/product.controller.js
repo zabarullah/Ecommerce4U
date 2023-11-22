@@ -1,25 +1,27 @@
 import productModel from "../models/product.model.js";
 import fs from "fs";
 import slugify from "slugify";
+import categoryModel from "../models/category.model.js";
 
 export const createProductController = async (req, res) => {
     try {
+        console.log('Backend - createProduct Controller Triggered');
         const { name, description, category, quantity, price, shipping } = req.fields;
         const { photo } = req.files; 
-
+        console.log(name, description, category, quantity, price, shipping);
         //Validation for missing fields which will be checked against the requiredFields array using the filter method.
         const requiredFields = ["name", "description", "category", "quantity", "price"];
         const missingFields = requiredFields.filter(field => !req.fields[field]);
 
         if (missingFields.length > 0) {
             return res.status(400).json({
-                error: `${missingFields.length > 0 ? 'Missing field(s): ' + missingFields.join(", ") : null } Required`
+                message: `${missingFields.length > 0 ? 'Missing field(s): ' + missingFields.join(", ") : null } Required`
             });
         }   
         //Validation for mising photo and size being no more than 1mb(in kbs)
         if (photo && photo.size > 1000000) { 
             return res.status(400).json({
-                error:  "Suitable Photo Is Required"
+                message:  "Suitable Photo Is Required"
             });
         }   
 
@@ -31,18 +33,20 @@ export const createProductController = async (req, res) => {
         }
         //save the entire products object, which now includes the all the fields including the binary data and the photo.
         await products.save();
-        res.status(201).json({
-            success:true,
-            message: "Product Created Successfully",
+        const categoryGet = await categoryModel.findById(category);
+        
+            res.status(201).json({
+            success: true,
+            message: `${name} Created in ${categoryGet.name} Successfully`,
             products
         })
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({
             success: false,
             error,
-            message: 'Error In Product'
+            message: 'Error In Creating Product'
         })
     }
 };
