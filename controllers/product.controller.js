@@ -8,7 +8,7 @@ export const createProductController = async (req, res) => {
         console.log('Backend - createProduct Controller Triggered');
         const { name, description, category, quantity, price, shipping } = req.fields;
         const { photo } = req.files; 
-        console.log(name, description, category, quantity, price, shipping);
+        //console.log(name, description, category, quantity, price, shipping);
         //Validation for missing fields which will be checked against the requiredFields array using the filter method.
         const requiredFields = ["name", "description", "category", "quantity", "price"];
         const missingFields = requiredFields.filter(field => !req.fields[field]);
@@ -101,14 +101,19 @@ export const getSingleProductController = async (req, res) => {
 //Get photo for a product with its photoid
 export const productPhotoController = async (req, res) => {
     try {
-        const {photoid} = req.params;
+        const { photoid } = req.params;
         const productPhoto = await productModel.findById(photoid).select('photo');
-        console.log(productPhoto);
-        if(productPhoto.photo.data) {
-            console.log('Photo exists')
-            res.set('content-type', productPhoto.photo.contentType);
-            return res.status(200).json(productPhoto.photo.data);
-        }  
+
+        if (productPhoto && productPhoto.photo && productPhoto.photo.data) {
+            res.set('Content-type', productPhoto.photo.contentType);
+            return res.status(200).send(productPhoto.photo.data);
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: 'Image not found',
+            });
+        }
+         
     } catch (error) {
         console.log(error);
         res.status(500).json({
