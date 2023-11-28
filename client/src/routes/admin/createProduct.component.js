@@ -39,6 +39,7 @@ const CreateProduct = () => {
     }  
 
     useEffect(() => {
+        // eslint-disable-next-line
         getAllCategories();
     }, [])    
 
@@ -53,6 +54,7 @@ const CreateProduct = () => {
           productData.append("quantity", quantity);
           productData.append("photo", photo);
           productData.append("category", category);
+          productData.append("shipping", shipping);
           
           const response = await axios.post("/api/v1/product/create-product", 
           productData,
@@ -93,7 +95,7 @@ const CreateProduct = () => {
                                 setCategory(e.target.value);
                             }}
                             >
-                                <option defaultValue={'Select a category'}>Select a Category</option>
+                                <option value={''}>Select a Category</option>
                             {
                                 categories?.map((category) => (
                                 <option key={category._id} value={category._id}>
@@ -137,17 +139,17 @@ const CreateProduct = () => {
                             <div className="mb-3">
                                 <select type='text' 
                                     className='form-select mb-3'
-                                    value={shipping}
                                     placeholder='Shipping'
-                                    onChange={(e) => setShipping(e.target.value)}
+                                    value={shipping}
+                                    onChange={(e) => setShipping(e.target.value === 'true')}
                                 >
-                                    <option defaultValue={'Select Shipping'}>
+                                    <option value={''}>
                                         Select Shipping
                                     </option>
-                                    <option value={'Yes'}>
+                                    <option value={"true"}>
                                         Yes
                                     </option>
-                                    <option value={'No'}>
+                                    <option value={"false"}>
                                         No
                                     </option>
                                 </select>

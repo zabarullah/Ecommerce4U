@@ -10,7 +10,7 @@ export const createProductController = async (req, res) => {
         const { photo } = req.files; 
         //console.log(name, description, category, quantity, price, shipping);
         //Validation for missing fields which will be checked against the requiredFields array using the filter method.
-        const requiredFields = ["name", "description", "category", "quantity", "price"];
+        const requiredFields = ["name", "description", "category", "quantity", "price","shipping"];
         const missingFields = requiredFields.filter(field => !req.fields[field]);
 
         if (missingFields.length > 0) {
@@ -152,7 +152,7 @@ export const updateProductController = async (req, res) => {
         const {id} = req.params;
 
         //Validation for missing fields which will be checked against the requiredFields array using the filter method.
-        const requiredFields = ["name", "description", "category", "quantity", "price"];
+        const requiredFields = ["name", "description", "category", "quantity", "price", "shipping"];
         const missingFields = requiredFields.filter(field => !req.fields[field]);
 
         if (missingFields.length > 0) {
