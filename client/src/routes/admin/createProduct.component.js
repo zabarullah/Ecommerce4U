@@ -39,8 +39,8 @@ const CreateProduct = () => {
     }  
 
     useEffect(() => {
-        // eslint-disable-next-line
         getAllCategories();
+        // eslint-disable-next-line
     }, [])    
 
     //handle create product function

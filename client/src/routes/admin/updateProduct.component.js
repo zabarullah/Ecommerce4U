@@ -7,7 +7,6 @@ import { useAuth } from "../../../src/context/auth.context.js";
 
 import Layout from '../../components/layout/layout.component.js';
 import AdminMenu from '../../components/adminMenu/adminMenu.component.js';
-import CategoryForm from '../../components/forms/category.form.js';
 import Modal from '../../components/modal/modal.component.js';
 
 const UpdateProduct = () => {
@@ -126,24 +125,6 @@ const UpdateProduct = () => {
         }
     }  
 
-        // handle action
-        const handleAction = () => {
-            
-            try {
-                if (action !== null) {
-                    if (action === 'handleUpdate') {
-                        console.log('handle update action executed')
-                        return handleUpdate(); // Assuming handleUpdate is an async function
-                    } else if (action === 'handleDelete') {
-                        console.log('handle delete action executed')
-                        return handleDelete(); // Assuming handleDelete is an async function
-                    } 
-                } 
-                
-            } catch (error) {
-                console.log(error);
-            }
-        }
 
   return (
     <Layout title="Dashboard- Update Product" alert={alert} setAlert={setAlert}>

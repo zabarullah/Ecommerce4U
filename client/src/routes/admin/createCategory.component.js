@@ -151,7 +151,7 @@ const CreateCategory = () => {
 
     useEffect(() => {
         getAllCategories();
-//        console.log(auth.token)
+// eslint-disable-next-line
     }, [])
 
   return (
