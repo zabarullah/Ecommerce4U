@@ -58,22 +58,29 @@ const HomePage = () => {
   };
 
   const filterProducts = () => {
-    // If no categories are checked, show all products
+    // If no categories are checked and no price range, show all products
     if (checkedCategories.length === 0 && !minPrice && !maxPrice) {
       return products;
     }
-
-    // Filter products based on checked categories
+  
+    // Filter products based on checked categories and/or Price range
     return products.filter((product) => {
-      const isInCategories = checkedCategories.includes(product.category._id);
+      // Check if there are no categories selected or if the product is in the selected categories. we have to check first condition 
+      //because if we dont have any categories checked the second condition will return false which excludes all products, 
+      //to return true add the first condition
+      const isInCategories = checkedCategories.length === 0 || checkedCategories.includes(product.category._id);
+  
+      // Check if there's no minPrice specified or if the product price is greater than or equal to minPrice,
+      // and there's no maxPrice specified or if the product price is less than or equal to maxPrice
       const isInPriceRange = 
         (!minPrice || product.price >= minPrice) &&
-        (!maxPrice || product.price <= maxPrice) 
-
-      return isInCategories || isInPriceRange;
-
-  });
+        (!maxPrice || product.price <= maxPrice);
+  
+      // Return true if the product is in the selected categories and in the specified price range
+      return isInCategories && isInPriceRange;
+    });
   };
+  
   // separate variable filteredProducts so that it can be mapped to display the filtered products
   const filteredProducts = filterProducts();
 
@@ -119,20 +126,20 @@ const HomePage = () => {
           <h1 className="text-center">All Products</h1>
           <div className="d-flex flex-wrap">
             {filteredProducts?.map((product) => (
-              <div className="card m-2" style={{ width: '18rem' }} key={product._id}>
-                <div>
+              <div className="card m-2" style={{ width: '18rem', height: '500px' }} key={product._id}>
+                <div style={{height: '60%'}}>
                   <img
                     src={`/api/v1/product/product-photo/${product._id}`}
-                    className="card-img-top"
+                    className="card-img-top img-fluid"
                     alt={product.name}
-                    style={{ height: '20rem' }}
+                    style={{ height: '100%', objectFit: 'cover' }}
                   />
-                  <div className="card-body">
+                  <div className="card-body h-40">
                     <h5 className="card-title">{product.name}</h5>
                     <p className="card-text">{product.description.substring(0,30)}...</p>
                     <p className="card-text">£{product.price}</p>
                     <button className="btn btn-primary ms-1">More details</button>
-                    <button className="btn btn-secondary ms-1">Add To CART</button>
+                    <button className="btn btn-secondary ms-1">Add To Cart</button>
                   </div>
                 </div>
               </div>
