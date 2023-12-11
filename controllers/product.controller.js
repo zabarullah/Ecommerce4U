@@ -51,30 +51,58 @@ export const createProductController = async (req, res) => {
     }
 };
 
-//Getting all the Products - Exluding the photo, limiting it to 12 and sorting the response with latest products first
+
+//Getting all the Products - Excluding the photo, with pagination
 export const getProductController = async (req, res) => {
     try {
-        const products = await productModel
-            .find({})
-            .populate('category')
-            .select("-photo")
-            .limit(12)
-            .sort({createdAt:-1});   
-        res.status(200).json({
-            success: true,
-            message: 'All Products List',
-            total: products.length,
-            products
-        })     
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 6;
+  
+      const skip = (page - 1) * limit;
+  
+      // Filter based on categories
+      const categoryFilter = req.query.categories ? { category: { $in: req.query.categories } } : {};
+  
+      // Filter based on price range
+      const priceFilter = {};
+      if (req.query.minPrice) {
+        priceFilter.price = { $gte: parseInt(req.query.minPrice) };
+      }
+      if (req.query.maxPrice) {
+        priceFilter.price = { ...priceFilter.price, $lte: parseInt(req.query.maxPrice) };
+      }
+  
+      const products = await productModel
+        .find({ ...categoryFilter, ...priceFilter })
+        .populate('category')
+        .select("-photo")
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 });
+  
+      const totalProducts = await productModel.countDocuments({ ...categoryFilter, ...priceFilter });
+  
+      const totalPages = Math.ceil(totalProducts / limit);
+  
+      res.status(200).json({
+        success: true,
+        message: 'All Products List',
+        total: totalProducts,
+        currentPage: page,
+        totalPages: totalPages,
+        products,
+      });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({
-          success: false,
-          error,
-          message: 'Error In Getting Products'
-        })        
+      console.log(error);
+      res.status(500).json({
+        success: false,
+        error,
+        message: 'Error In Getting Products',
+      });
     }
-};
+  };
+  
+
 
 //Getting a single product by slug 
 export const getSingleProductController = async (req, res) => {
