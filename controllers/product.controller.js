@@ -71,16 +71,27 @@ export const getProductController = async (req, res) => {
       if (req.query.maxPrice) {
         priceFilter.price = { ...priceFilter.price, $lte: parseInt(req.query.maxPrice) };
       }
-  
+
+      // Filter based on search bar
+      const searchFilter = {};
+        if (req.query.searchTerm) {
+        const searchRegex = new RegExp(req.query.searchTerm, 'i'); // 'i' for case-insensitive
+        searchFilter.$or = [{ name: searchRegex }, { description: searchRegex }];
+        }
+      
+       console.log('Search Term:', req.query.searchTerm);
+        console.log('Search Filter:', searchFilter);
+ 
+
       const products = await productModel
-        .find({ ...categoryFilter, ...priceFilter })
+        .find({ ...categoryFilter, ...priceFilter, ...searchFilter  })
         .populate('category')
         .select("-photo")
         .skip(skip)
         .limit(limit)
         .sort({ createdAt: -1 });
   
-      const totalProducts = await productModel.countDocuments({ ...categoryFilter, ...priceFilter });
+      const totalProducts = await productModel.countDocuments({ ...categoryFilter, ...priceFilter, ...searchFilter });
   
       const totalPages = Math.ceil(totalProducts / limit);
   
@@ -125,6 +136,39 @@ export const getSingleProductController = async (req, res) => {
         })        
     }
 };
+
+//Getting similar products by id
+// Controller to get similar products based on category
+export const getSimilarProductsController = async (req, res) => {
+    try {
+      const currentProductId = req.params.id; 
+      const currentProduct = await productModel.findById(currentProductId).exec();
+  
+      if (!currentProduct) {
+        return res.status(404).json({
+          success: false,
+          message: 'Product not found',
+        });
+      }
+  
+      const similarProducts = await productModel.find({ category: currentProduct.category }).limit(3).exec();
+  
+      res.status(200).json({
+        success: true,
+        message: 'Similar Products Fetched',
+        products: similarProducts,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        success: false,
+        error,
+        message: 'Error in getting similar products',
+      });
+    }
+  };
+  
+
 
 //Get photo for a product with its photoid
 export const productPhotoController = async (req, res) => {

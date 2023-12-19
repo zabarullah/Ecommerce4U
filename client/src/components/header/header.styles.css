@@ -1,29 +1,44 @@
-/* bootstrap navbar css changes*/
+/* Bootstrap navbar CSS changes */
 
 .navbar {
-    font-family: 'Poppins', sans-serif; 
-    font-size: 17px;
-    line-height: 26px;
-    text-transform: uppercase;
-    box-shadow: 0 8px 6px -6px gray;
-    --webkit-box-shadow: 0 8px 6px -6px gray;
-    border-bottom: solid rgb(150, 150, 150) !important;
-  }
-  
-  .nav-link {
-    font-weight: 300 !important;
-    color: white !important;
-  }
-  
-  .active {
-    border-bottom: 2px solid white;
-    font-weight: 600 !important; 
-  }
-  
-  .navbar-brand {
-    font-weight: 700;
-    font-family: 'roboto', 'sans-serif';
-    color: white !important;
-    letter-spacing: 3px;
-    
-  }
+  font-family: 'Poppins', sans-serif;
+  font-size: 17px;
+  line-height: 26px;
+  text-transform: uppercase;
+  box-shadow: 0 8px 6px -6px gray;
+  --webkit-box-shadow: 0 8px 6px -6px gray;
+  border-bottom: solid rgb(150, 150, 150) !important;
+}
+
+.navbar-brand,
+.nav-link {
+  line-height: 1.5; /* Adjusted line-height */
+  padding: 10px 5px; /* Adjusted padding */
+  margin: 0; /* Reset margin */
+  font-weight: 300 !important;
+  color: white !important;
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-family: 'roboto', 'sans-serif';
+  letter-spacing: 3px;
+}
+
+.active {
+  border-bottom: 2px solid white;
+  font-weight: 600 !important;
+}
+
+.dropdown-item {
+  color: white !important;
+  background-color: transparent !important;
+  border-bottom: 2px solid transparent; /* Initially transparent border */
+  transition: background-color 0.3s, border-color 0.3s; /* Add transition effect for smooth animation */
+  font-weight: 300 !important; /* Set font weight to match the rest of the navigation */
+}
+
+.dropdown-item:hover {
+  background-color: transparent !important;
+  border-bottom-color: white; /* Change the border color on hover */
+}

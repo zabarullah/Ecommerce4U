@@ -2,8 +2,12 @@ import React, { useState, useEffect, useContext } from 'react';
 import Layout from '../../components/layout/layout.component';
 import axios from 'axios';
 import { AlertContext } from '../../context/alert.context';
+import Pagination from '../../components/pagination/pagination.component';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
+  const navigate = useNavigate();
+  const location = useLocation(); // used to grab the category state from categories nav menu and categories page
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [checkedCategories, setCheckedCategories] = useState([]);
@@ -12,7 +16,17 @@ const HomePage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalProducts, setTotalProducts] = useState('')
+  const [searchTerm, setSearchTerm] = useState('');
   const { alert, setAlert } = useContext(AlertContext);
+
+  useEffect(() => {
+    if (location?.state) {
+      setCheckedCategories(location?.state?.checkedCategories);
+      // re-set state:after checkedCategories is setwith location.state.checkedCategories, i want to remove location.state so that the category doesnt stick on checked:
+      navigate({ state: null });
+    }
+    //console.log('State: ',location.state);
+  }, [location?.state]);
 
   // get all Categories
   const getAllCategories = async () => {
@@ -20,6 +34,7 @@ const HomePage = () => {
       const response = await axios.get('/api/v1/category/get-category');
       if (response.data?.success) {
         setCategories(response.data.category);
+      
       }
     } catch (error) {
       console.log(error);
@@ -30,18 +45,23 @@ const HomePage = () => {
 
   const getPaginatedProducts = async () => {
     try {
-      const response = await axios.get(`/api/v1/product/get-products?page=${currentPage}&limit=6`, {
+      const response = await axios.get(`/api/v1/product/get-products`, {
         params: {
-          categories: checkedCategories, // Send the selected categories to the server
-          minPrice,
-          maxPrice,
+            page: currentPage,
+            limit: 3,
+            categories: checkedCategories,
+            minPrice,
+            maxPrice,
+            searchTerm,  
         },
-      });
+    });
   
       if (response.data.success) {
         setProducts(response.data.products);
         setTotalPages(response.data.totalPages);
         setTotalProducts(response.data.total);
+
+        //console.log('The search term is ', searchTerm)
       } else {
         setAlert({ type: 'error', message: 'Error In getting Products' });
       }
@@ -51,19 +71,13 @@ const HomePage = () => {
     }
   };
   
-
-  // useEffect(() => {
-  //   getAllCategories();
-  //   getPaginatedProducts();
-  //   // eslint-disable-next-line
-  // }, [currentPage, checkedCategories, minPrice, maxPrice]);
   useEffect(() => {
     // Reset to the first page if the current page is greater than the new total pages (its needed when priceRange changes forces lower filteredProducts thus requireing lower totalPages)
     if (currentPage > totalPages) {
       setCurrentPage(1);
     }
 
-    // Reset to the first page if the current page is still valid but the products are no longer present on that page
+    // Reset to the first page if the current page is more than the new searches totalPages(assigned here as maxValidPage) & current page is not page 1 & if there are not products
     const maxValidPage = Math.ceil(totalProducts / 6); // Assuming you have 6 products per page
     if (currentPage <= maxValidPage && currentPage !== 1 && filteredProducts.length === 0) {
       setCurrentPage(1);
@@ -72,22 +86,24 @@ const HomePage = () => {
     getAllCategories();
     getPaginatedProducts();
     // eslint-disable-next-line
-  }, [currentPage, checkedCategories, minPrice, maxPrice, totalPages,totalProducts]);
+  }, [currentPage, checkedCategories, minPrice, maxPrice, totalPages,totalProducts, searchTerm]);
   
   useEffect(() => {
     setCurrentPage(1);
   }, [totalProducts]);
-  
+
+ 
   
   const handleCategoryChecked = (categoryId) => {
     const isChecked = checkedCategories.includes(categoryId);
-  
     if (isChecked) {
-      // Category is already checked, remove it
+      // if the Category is already checked, remove it(uncheck)
       setCheckedCategories((prevState) => prevState.filter((id) => id !== categoryId));
+      console.log('Checked Categories after handleCategoryChecked:', checkedCategories);
     } else {
-      // Category is not checked, add it
+      // Category is not checked, add it(check)
       setCheckedCategories((prevState) => [...prevState, categoryId]);
+      console.log('Checked Categories after handleCategoryChecked:', checkedCategories);
     }
   
     // Reset page to 1 when categories change
@@ -95,7 +111,7 @@ const HomePage = () => {
   };
   
 
-
+  //Filters products based on checked or unchecked categories and/or price range 
   const filterProducts = () => {
     // If no categories are checked and no price range, show all products
     if (checkedCategories.length === 0 && !minPrice && !maxPrice) {
@@ -104,13 +120,10 @@ const HomePage = () => {
   
     // Filter products based on checked categories and/or Price range
     return products.filter((product) => {
-      // Check if there are no categories selected or if the product is in the selected categories. we have to check first condition 
-      //because if we dont have any categories checked the second condition will return false which excludes all products, 
-      //to return true add the first condition
+      // Check if there are no categories selected or if the product is in the selected categories. we have to check first condition because if we dont have any categories checked the second condition will return false which excludes all products, to return true add the first condition
       const isInCategories = checkedCategories.length === 0 || checkedCategories.includes(product.category._id);
   
-      // Check if there's no minPrice specified or if the product price is greater than or equal to minPrice,
-      // and there's no maxPrice specified or if the product price is less than or equal to maxPrice
+      // Check if there's no minPrice specified or if the product price is greater than or equal to minPrice, and there's no maxPrice specified or if the product price is less than or equal to maxPrice
       const isInPriceRange = 
         (!minPrice || product.price >= minPrice) &&
         (!maxPrice || product.price <= maxPrice);
@@ -137,6 +150,7 @@ const HomePage = () => {
         setCheckedCategories([]);
         setMinPrice('');
         setMaxPrice('');
+        setSearchTerm('');
         break;
       default:
         // Do nothing for unknown filter types
@@ -146,9 +160,9 @@ const HomePage = () => {
 
   return (
     <Layout title="Home Page - Ecommerce 4 U" alert={alert} setAlert={setAlert}>
-      <div className="row mt-3">
+      <div className="row mt-3 ms-1">
         <div className="col-md-3">
-          <h4 className="text-center">Filter by Category</h4>
+          <h4 className="text-center border-bottom">Filter by Category</h4>
           {categories?.map((category) => (
             <div key={category._id} className="input-group-text ms-3">
               <input
@@ -168,7 +182,7 @@ const HomePage = () => {
             Reset Categories
           </button>
           </div>
-          <h4 className="text-center mt-3">Filter By Price</h4>
+          <h4 className="text-center mt-3 border-bottom">Filter by Price</h4>
           <div className="input-group-text ms-3">
             <input 
               className='form-control'
@@ -186,12 +200,28 @@ const HomePage = () => {
             />
           </div>
           <div className="d-grid gap-2 col-6 mx-auto mt-2">
-          <button className="btn btn-secondary mb-2" onClick={() => resetFilter('price')}>
-              Reset Price
+            <button className="btn btn-secondary mb-2" onClick={() => resetFilter('price')}>
+                Reset Price
             </button>
-            <button className="btn btn-primary mt-2" onClick={() => resetFilter('all')}>
-              Reset All Filters
-          </button>
+
+          </div>
+          <h4 className="text-center mt-3 border-bottom">Search Products</h4>
+          <div className="input-group-text ms-3">
+          <input
+              className='form-control'
+              type='text'
+              placeholder='Search Products'
+              value={searchTerm}
+              onChange={(e) => {
+                //console.log('Search Term:', e.target.value); working
+                setSearchTerm(e.target.value)
+              }}
+            />
+          </div>
+          <div  className="text-center mt-3">
+            <button className="btn btn-primary mt-3" onClick={() => resetFilter('all')}>
+                Reset All Filters
+            </button>
           </div>
         </div>
 
@@ -214,45 +244,22 @@ const HomePage = () => {
                     <h5 className="card-title">{product.name}</h5>
                     <p className="card-text">{product.description.substring(0,30)}...</p>
                     <p className="card-text">£{product.price}</p>
-                    <button className="btn btn-primary ms-1">More details</button>
+                    <button className="btn btn-primary ms-1" 
+                    onClick={() => navigate(`/product/${product.slug}`)}>More details</button>
                     <button className="btn btn-secondary ms-1">Add To Cart</button>
                   </div>
                 </div>
               </div>
             ))}
           </div>
+          
           {/* Pagination controls */}
           <div className="d-flex justify-content-center mt-3">
-            <nav aria-label="Page navigation example">
-              <ul className="pagination">
-                <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                  <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)} aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                  </button>
-                </li>
-                {Array.from({ length: totalPages }, (_, index) => (
-                  <li key={index + 1} className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}>
-                    <button 
-                      className="page-link" 
-                      onClick={() => setCurrentPage(index + 1)}
-                      disabled={currentPage === index + 1} // Disable the button if it's already the current page
-                    >
-                    {index + 1}
-                    </button>
-                  </li>
-                ))}
-
-                <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                  <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)} aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                  </button>
-                </li>
-              </ul>
-            </nav>
-            <div>
+            <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage}/>
+            {/* <div>
               <h6>{`Current page: ${currentPage} of total ${totalPages}`}</h6>
               <h6>{`Number of Products in Category: ${totalProducts}`}</h6>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
