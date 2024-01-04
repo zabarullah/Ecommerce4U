@@ -42,3 +42,51 @@
   background-color: transparent !important;
   border-bottom-color: white; /* Change the border color on hover */
 }
+
+/* Cart style section */
+.cart-dropdown {
+  width: 250px; /* Adjust as needed */
+}
+
+.cart-scrollable {
+  max-height: 240px; /* Adjust as needed */
+  overflow-y: auto;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px; /* Add padding to give some space */
+}
+
+.cart-item-image img {
+  max-width: 40px; 
+  height: auto;
+  margin-right: 10px; /* Add some margin between image and text */
+}
+
+.cart-item-details {
+  flex-grow: 1; /* Allows the details to take up available space */
+}
+
+.item-name {
+  margin-bottom: 3px;
+  font-weight: bold;
+  margin-right: 10px; /* Add some right margin for separation */
+}
+.item-quantity {
+  margin: 0;
+}
+
+.cart-total {
+  text-align: center;
+  
+  padding: 5px 0; /* Add some padding for better visual separation */
+}
+
+.go-to-checkout {
+  display: block;
+  margin: 5px auto; /* Center the button horizontally with some margin */
+}
+

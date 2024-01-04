@@ -20,6 +20,7 @@ import Products from './routes/admin/products.component';
 import UpdateProduct from './routes/admin/updateProduct.component';
 import ProductPage from './routes/productPage/productPage.component';
 import CategoriesPage from './routes/categories/categoriesPage.component';
+import Checkout from './routes/checkout/checkout.component';
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
         <Route exact path='/login' element={<Login />}/>
         <Route exact path='/forgot-my-password' element={<ForgotMyPassword />}/>
         <Route exact path='/product/:slug' element={<ProductPage />}/>
+        <Route exact path='/checkout' element={<Checkout />}/>
 
         <Route exact path='/*' element={<PageNotFound />}/>
       </Routes>

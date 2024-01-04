@@ -7,17 +7,20 @@ import {BrowserRouter} from 'react-router-dom';
 import { FormProvider } from './context/form.context';
 import { AlertProvider } from './context/alert.context';
 import { AuthProvider } from './context/auth.context';
+import { CartProvider } from './context/cart.context';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <AuthProvider>
-    <AlertProvider>
-      <FormProvider>
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
-      </FormProvider>
-    </AlertProvider>  
+    <CartProvider>
+      <AlertProvider>
+        <FormProvider>
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
+        </FormProvider>
+      </AlertProvider>  
+    </CartProvider>
   </AuthProvider>
 );
 

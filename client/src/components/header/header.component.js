@@ -6,11 +6,13 @@ import './header.styles.css';
 import { AlertContext } from '../../context/alert.context';
 import useCategoryHook from '../../hooks/useCategoryHook';
 import { useNavigate } from 'react-router-dom';
+import { CartContext } from '../../context/cart.context';
 
 const Header = () => {
   const [auth, setAuth] = useAuth();
   const { setAlert } = useContext(AlertContext); // to set the Alert type and message (alert displayed inside the Layout component)
   const { categories } = useCategoryHook(); // categories brought in from the useCategoryHook
+  const { cartItems, getTotalQuantity, getCartTotal } = useContext(CartContext);
   const navigate = useNavigate();
   
   //this will help reset the auth state back to default (user not logged in) when we use this helper function on the onChange event handler in link Logout
@@ -91,9 +93,59 @@ const Header = () => {
                   </>
                 )
                 }
-                  <li className="nav-item">
-                    <NavLink to='/cart' className="nav-link">Cart (0)</NavLink>
-                  </li>
+                <li className="nav-item dropdown me-2">
+                <NavLink
+                  className="nav-link dropdown-toggle"
+                  to="/cart"
+                  id="navbarDropdown"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Cart {getTotalQuantity() > 0 && `(${getTotalQuantity()})`}
+                </NavLink>
+                <ul className="dropdown-menu dropdown-menu-end cart-dropdown bg-info" aria-labelledby="navbarDropdown">
+                  {cartItems.length === 0 ? (
+                    <li>
+                      <p className="dropdown-item">Your cart is empty.</p>
+                    </li>
+                  ) : (
+                    <>
+                      <div className="cart-scrollable">
+                        {cartItems.map((item) => (
+                          <li key={item._id} 
+                          className="dropdown-item cart-item" 
+                          style={{cursor: 'pointer' }}
+                          onClick={() => navigate(`/product/${item.slug}`)}
+                          >
+                            <div className="cart-item-image">
+                              <img
+                                src={`/api/v1/product/product-photo/${item._id}`}
+                                alt={item.name}
+                                className="img-fluid rounded-start rounded-end shadow"
+                                width="50px"
+                              />
+                            </div>
+                            <div className="cart-item-details">
+                              <p className="item-name">{item.name}</p>
+                              <p className="item-quantity">Quantity: {item.quantity}</p>
+                            </div>
+                          </li>
+                        ))}
+                      </div>
+                      <li className="dropdown-divider"></li>
+                      <li className="dropdown-item cart-total text-centre">
+                        <strong>Total: £{getCartTotal().toFixed(2)}</strong>
+                      </li>
+                      <li>
+                        <button className="btn btn-primary go-to-checkout  btn-block" onClick={() => navigate('/checkout')}>
+                          Go to Checkout
+                        </button>
+                      </li>
+                    </>
+                  )}
+                </ul>
+              </li>
               </ul>
           </div>
         </div>

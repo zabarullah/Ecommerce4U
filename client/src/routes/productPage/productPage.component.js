@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Layout from '../../components/layout/layout.component';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { CartContext } from '../../context/cart.context';
 
 const ProductPage = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [similarProducts, setSimilarProducts] = useState([]);
+  const { addToCart } = useContext(CartContext);
   const params = useParams();
   const navigate = useNavigate();
 
@@ -59,8 +61,9 @@ const ProductPage = () => {
     return <div>Product not found</div>; // You can create a more user-friendly error message
   }
 
+  //adding the product to the cart
   const handleAddToCart = () => {
-    // Implement your logic for adding the product to the cart
+    addToCart(product)
     console.log('Added to cart:', product.name);
   };
 
@@ -84,7 +87,7 @@ const ProductPage = () => {
                             <p className="card-text">Description: {product.description}</p>
                             <p className="card-text"><small className="text-body-secondary">Category: {product.category.name}</small></p>
                             <div className="card-footer d-flex justify-content-between">
-                                <p class="card-text">Price: {product.price}</p>
+                                <p className="card-text">Price: {product.price}</p>
                                 <button className="btn btn-primary" onClick={handleAddToCart}>
                                     Add to Cart
                                 </button>

@@ -4,11 +4,13 @@ import axios from 'axios';
 import { AlertContext } from '../../context/alert.context';
 import Pagination from '../../components/pagination/pagination.component';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { CartContext } from '../../context/cart.context';
 
 const HomePage = () => {
   const navigate = useNavigate();
   const location = useLocation(); // used to grab the category state from categories nav menu and categories page
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [checkedCategories, setCheckedCategories] = useState([]);
   const [minPrice, setMinPrice] = useState('');
@@ -18,15 +20,17 @@ const HomePage = () => {
   const [totalProducts, setTotalProducts] = useState('')
   const [searchTerm, setSearchTerm] = useState('');
   const { alert, setAlert } = useContext(AlertContext);
+  const { cartItems, addToCart } = useContext(CartContext);
 
   useEffect(() => {
-    if (location?.state) {
-      setCheckedCategories(location?.state?.checkedCategories);
-      // re-set state:after checkedCategories is setwith location.state.checkedCategories, i want to remove location.state so that the category doesnt stick on checked:
+    if (location?.state && location.state.checkedCategories) {
+      //first, check which state is coming from location.state as we need state for checkCategories as per path we come from, but also the login page is sending state for notifications which was being set to checkedCategories here before i figured it out 
+      setCheckedCategories(location.state.checkedCategories);
+      // re-set state:after checkedCategories is set with location.state.checkedCategories, I want to remove location.state so that the category doesn't stick on checked:
       navigate({ state: null });
     }
-    //console.log('State: ',location.state);
   }, [location?.state]);
+  
 
   // get all Categories
   const getAllCategories = async () => {
@@ -60,6 +64,7 @@ const HomePage = () => {
         setProducts(response.data.products);
         setTotalPages(response.data.totalPages);
         setTotalProducts(response.data.total);
+        
 
         //console.log('The search term is ', searchTerm)
       } else {
@@ -72,27 +77,46 @@ const HomePage = () => {
   };
   
   useEffect(() => {
-    // Reset to the first page if the current page is greater than the new total pages (its needed when priceRange changes forces lower filteredProducts thus requireing lower totalPages)
+    // Reset to the first page if the current page is greater than the new total pages (its needed when priceRange changes forces lower filteredProducts thus requiring lower totalPages)
     if (currentPage > totalPages) {
       setCurrentPage(1);
     }
-
+  
     // Reset to the first page if the current page is more than the new searches totalPages(assigned here as maxValidPage) & current page is not page 1 & if there are not products
     const maxValidPage = Math.ceil(totalProducts / 6); // Assuming you have 6 products per page
     if (currentPage <= maxValidPage && currentPage !== 1 && filteredProducts.length === 0) {
       setCurrentPage(1);
     }
-
+  
     getAllCategories();
     getPaginatedProducts();
-    // eslint-disable-next-line
-  }, [currentPage, checkedCategories, minPrice, maxPrice, totalPages,totalProducts, searchTerm]);
+  
+    // Call the filterProducts function when the component mounts
+    if (products) {
+      const initialFilteredProducts = filterProducts();
+      setFilteredProducts(initialFilteredProducts);
+    }
+  }, [currentPage, checkedCategories, minPrice, maxPrice, totalPages, totalProducts, searchTerm]);
+  
   
   useEffect(() => {
+   // filterProducts()
     setCurrentPage(1);
   }, [totalProducts]);
 
- 
+  useEffect(() => {
+    console.log('Home Pages cart:',cartItems)
+  }, [cartItems]);
+
+
+  useEffect(() => {
+    // Update the filtered products whenever the dependencies change
+    if (products) {
+      const updatedFilteredProducts = filterProducts();
+      setFilteredProducts(updatedFilteredProducts);
+    }
+  }, [checkedCategories, minPrice, maxPrice, searchTerm, products]);
+  
   
   const handleCategoryChecked = (categoryId) => {
     const isChecked = checkedCategories.includes(categoryId);
@@ -111,30 +135,38 @@ const HomePage = () => {
   };
   
 
-  //Filters products based on checked or unchecked categories and/or price range 
-  const filterProducts = () => {
-    // If no categories are checked and no price range, show all products
-    if (checkedCategories.length === 0 && !minPrice && !maxPrice) {
-      return products;
-    }
-  
-    // Filter products based on checked categories and/or Price range
-    return products.filter((product) => {
-      // Check if there are no categories selected or if the product is in the selected categories. we have to check first condition because if we dont have any categories checked the second condition will return false which excludes all products, to return true add the first condition
-      const isInCategories = checkedCategories.length === 0 || checkedCategories.includes(product.category._id);
-  
-      // Check if there's no minPrice specified or if the product price is greater than or equal to minPrice, and there's no maxPrice specified or if the product price is less than or equal to maxPrice
-      const isInPriceRange = 
-        (!minPrice || product.price >= minPrice) &&
-        (!maxPrice || product.price <= maxPrice);
-      
-      // Return true if the product is in the selected categories and in the specified price range
-      return isInCategories && isInPriceRange;
-    });
-  };
+// Filters products based on checked or unchecked categories and/or price range
+const filterProducts = () => {
+  // If no products, return an empty array
+  if (!products || products.length === 0) {
+    return [];
+  }
+
+  // If no categories are checked and no price range, show all products
+  if (checkedCategories.length === 0 && !minPrice && !maxPrice) {
+    return products;
+  }
+
+  // Filter products based on checked categories and/or Price range
+  return products.filter((product) => {
+    // Check if there are no categories selected or if the product is in the selected categories.
+    // We have to check the first condition because if we don't have any categories checked, the second condition will return false,
+    // which excludes all products. To return true, add the first condition.
+    const isInCategories =
+      checkedCategories.length === 0 || (product.category && checkedCategories.includes(product.category._id));
+
+    // Check if there's no minPrice specified or if the product price is greater than or equal to minPrice,
+    // and there's no maxPrice specified or if the product price is less than or equal to maxPrice
+    const isInPriceRange = (!minPrice || product.price >= minPrice) && (!maxPrice || product.price <= maxPrice);
+
+    // Return true if the product is in the selected categories and in the specified price range
+    return isInCategories && isInPriceRange;
+  });
+};
+
   
   // separate variable filteredProducts so that it can be mapped to display the filtered products
-  const filteredProducts = filterProducts();
+ // const filteredProducts = filterProducts();
 
   //resetting each filter by its filter type(from the button)
   const resetFilter = (filterType) => {
@@ -231,26 +263,39 @@ const HomePage = () => {
               <h6>{`Number of Products: ${totalProducts}`}</h6>
           </div>
           <div className="d-flex flex-wrap">
-            {filteredProducts?.map((product) => (
-              <div className="card m-2" style={{ width: '18rem', height: '500px' }} key={product._id}>
-                <div style={{height: '60%'}}>
-                  <img
-                    src={`/api/v1/product/product-photo/${product._id}`}
-                    className="card-img-top img-fluid"
-                    alt={product.name}
-                    style={{ height: '100%', objectFit: 'cover' }}
-                  />
-                  <div className="card-body h-40">
-                    <h5 className="card-title">{product.name}</h5>
-                    <p className="card-text">{product.description.substring(0,30)}...</p>
-                    <p className="card-text">£{product.price}</p>
-                    <button className="btn btn-primary ms-1" 
-                    onClick={() => navigate(`/product/${product.slug}`)}>More details</button>
-                    <button className="btn btn-secondary ms-1">Add To Cart</button>
+          {filteredProducts && filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
+                <div className="card m-2" style={{ width: '18rem', height: '500px' }} key={product._id}>
+                  <div style={{ height: '60%' }}>
+                    <img
+                      src={`/api/v1/product/product-photo/${product._id}`}
+                      className="card-img-top img-fluid"
+                      alt={product.name}
+                      style={{ height: '100%', objectFit: 'cover' }}
+                    />
+                    <div className="card-body h-40">
+                      <h5 className="card-title">{product.name}</h5>
+                      <p className="card-text">{product.description.substring(0, 30)}...</p>
+                      <p className="card-text">£{product.price}</p>
+                      <button
+                        className="btn btn-primary ms-1"
+                        onClick={() => navigate(`/product/${product.slug}`)}
+                      >
+                        More details
+                      </button>
+                      <button
+                        className="btn btn-secondary ms-1"
+                        onClick={() => addToCart(product)}
+                      >
+                        Add To Cart
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p>No products found.</p>
+            )}
           </div>
           
           {/* Pagination controls */}
