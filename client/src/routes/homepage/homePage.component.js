@@ -22,6 +22,8 @@ const HomePage = () => {
   const { alert, setAlert } = useContext(AlertContext);
   const { cartItems, addToCart } = useContext(CartContext);
 
+  
+
   useEffect(() => {
     if (location?.state && location.state.checkedCategories) {
       //first, check which state is coming from location.state as we need state for checkCategories as per path we come from, but also the login page is sending state for notifications which was being set to checkedCategories here before i figured it out 
@@ -285,7 +287,10 @@ const filterProducts = () => {
                       </button>
                       <button
                         className="btn btn-secondary ms-1"
-                        onClick={() => addToCart(product)}
+                        onClick={() => {
+                          addToCart(product);
+                          setAlert({ type: 'success', message: `${product.name} Added To Cart` });
+                        }}
                       >
                         Add To Cart
                       </button>

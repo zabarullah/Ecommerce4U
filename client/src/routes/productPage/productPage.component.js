@@ -4,12 +4,14 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../../context/cart.context';
+import { AlertContext } from '../../context/alert.context';
 
 const ProductPage = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [similarProducts, setSimilarProducts] = useState([]);
   const { addToCart } = useContext(CartContext);
+  const { setAlert } = useContext(AlertContext);
   const params = useParams();
   const navigate = useNavigate();
 
@@ -62,13 +64,14 @@ const ProductPage = () => {
   }
 
   //adding the product to the cart
-  const handleAddToCart = () => {
-    addToCart(product)
-    console.log('Added to cart:', product.name);
+  const handleAddToCart = (productToAdd) => {
+    addToCart(productToAdd)
+  //console.log('Added to cart:', productToAdd.name);
+    setAlert({ type: 'success', message: `${productToAdd.name} Added To Cart` });
   };
 
   return (
-    <Layout title={product.name} /* Add any other props you need for your Layout component */>
+    <Layout title={product.name} >
       <div className="container mt-4 text-center">
         <div className="row ">
             <div className="card mb-3 text-center" >
@@ -88,8 +91,10 @@ const ProductPage = () => {
                             <p className="card-text"><small className="text-body-secondary">Category: {product.category.name}</small></p>
                             <div className="card-footer d-flex justify-content-between">
                                 <p className="card-text">Price: {product.price}</p>
-                                <button className="btn btn-primary" onClick={handleAddToCart}>
-                                    Add to Cart
+                                <button className="btn btn-primary" 
+                                onClick={() => (handleAddToCart(product))}
+                                >
+                                Add to Cart
                                 </button>
                             </div>
                         </div>
@@ -115,7 +120,10 @@ const ProductPage = () => {
                     <p className="card-text">£{similarProduct.price}</p>
                     <button className="btn btn-primary ms-1" 
                     onClick={() => navigate(`/product/${similarProduct.slug}`)}>More details</button>
-                    <button className="btn btn-secondary ms-1">Add To Cart</button>
+                    <button className="btn btn-secondary ms-1" 
+                            onClick={() => (handleAddToCart(similarProduct))}
+                    >
+                    Add To Cart</button>
                     </div>
                 </div>
               </div>
