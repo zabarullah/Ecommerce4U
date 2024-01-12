@@ -31,6 +31,7 @@ const HomePage = () => {
       // re-set state:after checkedCategories is set with location.state.checkedCategories, I want to remove location.state so that the category doesn't stick on checked:
       navigate({ state: null });
     }
+    // eslint-disable-next-line
   }, [location?.state]);
   
 
@@ -98,6 +99,7 @@ const HomePage = () => {
       const initialFilteredProducts = filterProducts();
       setFilteredProducts(initialFilteredProducts);
     }
+    // eslint-disable-next-line
   }, [currentPage, checkedCategories, minPrice, maxPrice, totalPages, totalProducts, searchTerm]);
   
   
@@ -117,6 +119,7 @@ const HomePage = () => {
       const updatedFilteredProducts = filterProducts();
       setFilteredProducts(updatedFilteredProducts);
     }
+    // eslint-disable-next-line
   }, [checkedCategories, minPrice, maxPrice, searchTerm, products]);
   
   

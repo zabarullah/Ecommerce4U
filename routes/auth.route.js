@@ -1,5 +1,5 @@
 import express from "express";
-import {forgotPasswordController, loginController, protectedRouteController, signupController} from '../controllers/auth.controller.js'
+import {forgotPasswordController, loginController, protectedRouteController, signupController, updateProfileController} from '../controllers/auth.controller.js'
 import { isAdmin, requireSignIn } from "../middlewares/auth.middleware.js";
 
 
@@ -15,6 +15,9 @@ router.get('/protected', requireSignIn, isAdmin, protectedRouteController);
 router.get('/user-auth', requireSignIn, protectedRouteController);
 //protected route for admin authenticated routes
 router.get('/admin-auth', requireSignIn, isAdmin, protectedRouteController);
+
+//update user profile
+router.put("/update-profile", requireSignIn, updateProfileController);
 
 
 export default router;

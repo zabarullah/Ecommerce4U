@@ -15,6 +15,9 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const path = location.state?.path || "/";
+  console.log("Path before navigate:", path);
+  console.log("Location state:", location.state);
+
 
     const handleInputChange = (e) => {
       const { name, value } = e.target;

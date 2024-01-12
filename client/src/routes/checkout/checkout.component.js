@@ -2,18 +2,29 @@ import React, { useContext } from 'react';
 import { CartContext } from '../../context/cart.context';
 import Layout from '../../components/layout/layout.component';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/auth.context';
 
 const CheckoutPage = () => {
   const { cartItems, removeFromCart, addToCart, removeItemFromCart,clearCart, getCartTotal } = useContext(CartContext);
   const navigate = useNavigate();
+  const [auth] = useAuth(); // Get the Auth state
+
   return (
     <Layout title="Checkout">
-      <div className="container mt-4">
-        <h2>Your Checkout</h2>
+      <div className="container mt-4 mb-4">
+        
+            {auth.user ? 
+            (<h2>{`${auth.user.name}'s Checkout`}</h2>) 
+            : 
+            (<h2>Your Checkout</h2>)
+            }
+            
         {cartItems.length === 0 ? (
           <p>Your checkout is empty.</p>
         ) : (
-          <div className="table-responsive">
+            <>
+          <div className="row">
+          <div className="table-responsive col-md-7">
             <table className="table table-hover">
               <thead>
                 <tr style={{ borderBottom: '2px solid #dee2e6' }}>
@@ -62,22 +73,76 @@ const CheckoutPage = () => {
               </tbody>
             </table>
           </div>
+          <div className="col-md-5">
+            <h2>Shipping Details</h2>
+            <hr />
+            <h4>Total: £{getCartTotal().toFixed(2)}</h4>
+            <hr />
+                
+            {
+                auth && auth.user && auth.user.address ? 
+                (
+                    <>
+                        <div className="mb-3">
+                            <h6>{`Name: ${auth?.user?.name}`}</h6>
+                            <h6>{`Address: ${auth?.user?.address}`}</h6>
+                            <hr />
+                            <button 
+                            className='btn btn-danger'
+                            onClick={() => navigate('/dashboard/user/profile')}
+                            >
+                            Change Address
+                            </button>
+                        </div>
+                    </>
+                ) 
+                : 
+                (
+                    <div className="mb-3">
+                        {
+                            auth?.token ? 
+                            (
+                                <button
+                                className='btn btn-danger'
+                                onClick={() => navigate('/dashboard/user/profile')}
+                                >
+                                Change Address
+                                </button>
+                            ) 
+                            : 
+                            (
+                                <button
+                                className='btn btn-secondary'
+                                onClick={() => navigate('/login', {
+                                    state: { path: "/checkout" },
+                                })}
+                                >
+                                Login To Pay
+                                </button>
+                            )
+                        }
+                    </div>
+                )
+            }
+            <button className="btn btn-primary">Proceed to Payment</button>
+
+          </div>
+          </div>
+          </>
         )}
 
         {cartItems.length > 0 && (
           <div className="mt-3">
-            <button className="btn btn-secondary me-2" onClick={clearCart}>
+            <button className="btn btn-danger me-2" onClick={clearCart}>
               Clear Checkout
             </button>
-            {/* You can add additional buttons or elements here */}
+            
           </div>
         )}
 
-        <div className="mt-3">
-          <h4>Total: £{getCartTotal().toFixed(2)}</h4>
-          <button className="btn btn-primary">Proceed to Payment</button>
-        </div>
+
       </div>
+
     </Layout>
   );
 };

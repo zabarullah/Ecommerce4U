@@ -45,12 +45,14 @@ const ProductPage = () => {
 
   useEffect(() => {
     fetchProduct();
+    // eslint-disable-next-line
   }, [params.slug]);
   
   useEffect(() => {
     if (product) {
       fetchSimilarProducts();
     }
+    // eslint-disable-next-line
   }, [product]);  
   
 
