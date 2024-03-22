@@ -6,13 +6,13 @@ import AdminMenu from '../../components/adminMenu/adminMenu.component';
 import './product.component.css'
 
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AlertContext } from '../../context/alert.context';
 
 const Products = () => {
     const [products, setProducts] = useState([]);
-    const { alert, setAlert } = useContext(AlertContext);// to set the Alert type and message (alert displayed inside the Layout component)
-
+    const { setAlert } = useContext(AlertContext);// to set the Alert type and message (alert displayed inside the Layout component)
+    const navigate = useNavigate();
 
     const getAllProducts = async () => {
         try {
@@ -36,7 +36,7 @@ const Products = () => {
     },[])
 
   return (
-    <Layout title="Dashboard- Products" alert={alert} setAlert={setAlert}> 
+    <Layout title="Dashboard- Products"> 
     
         <div className='container-fluid m-3 p-3'>
             <div className="row">
@@ -48,18 +48,38 @@ const Products = () => {
                     <div className="d-flex">
                     {
                         products?.map(product => (
-                            <Link key={product._id} to={`/dashboard/admin/product/${product.slug}`} className="product-link">
-                            <div className="card m-2" style={{width: "18rem"}}>
-                                <div>
-                                    <img src={`/api/v1/product/product-photo/${product._id}`} className="card-img-top" alt={product.name} />
-                                <div className="card-body">
-                                    <h5 className="card-title">{product.name}</h5>
-                                    <p className="card-text">{product.description}</p>
-                                </div>
-                                </div>
+                            // <Link key={product._id} to={`/dashboard/admin/product/${product.slug}`} className="product-link">
+                            // <div className="card m-2" style={{width: "18rem"}}>
+                            //     <div>
+                            //         <img src={`/api/v1/product/product-photo/${product._id}`} className="card-img-top" alt={product.name} />
+                            //     <div className="card-body">
+                            //         <h5 className="card-title">{product.name}</h5>
+                            //         <p className="card-text">{product.description}</p>
+                            //     </div>
+                            //     </div>
+                            // </div>
+                            // </Link>
+                            <div className="card m-2" style={{ width: '18rem', height: '500px' }} key={product._id}>
+                            <div style={{ height: '60%' }}>
+                              <img
+                                src={`/api/v1/product/product-photo/${product._id}`}
+                                className="card-img-top img-fluid"
+                                alt={product.name}
+                                style={{ height: '100%', objectFit: 'cover' }}
+                              />
+                              <div className="card-body h-40">
+                                <h5 className="card-title">{product.name}</h5>
+                                <p className="card-text">{product.description.substring(0, 30)}...</p>
+                                <p className="card-text">£{product.price}</p>
+                                <button
+                                  className="btn btn-primary ms-1"
+                                  onClick={() => navigate(`/product/${product.slug}`)}
+                                >
+                                  More details
+                                </button>
+                              </div>
                             </div>
-                            </Link>
-
+                            </div>
                         ))
                     }
                     </div>

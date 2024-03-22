@@ -74,25 +74,30 @@ const Login = () => {
       
 
   return (
-    <Layout title="Login - Ecommerce 4 U" alert={alert} setAlert={setAlert}>
-       <div className="login">
-        <h1>Login</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3 form-floating">
-            <input type="email" className="form-control" id="email" placeholder='Email' name="email" value={email} onChange={handleInputChange} required  />
-            <label htmlFor="exampleFormControlInput">Email</label>
+    <Layout title="Login - Ecommerce 4 U">
+      <div className="container">
+        <div className="row mt-3">
+          <div className="col-md-12 login">
+            <div className="login ">
+              <h1>Login</h1>
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3 form-floating">
+                  <input type="email" className="form-control" id="email" placeholder='Email' name="email" value={email} onChange={handleInputChange} required  />
+                  <label htmlFor="exampleFormControlInput">Email</label>
+                </div>
+                <div className="mb-3 form-floating">
+                  <input type="password" className="form-control" id="password" placeholder='Password' name="password" value={password} onChange={handleInputChange} required  />
+                  <label htmlFor="exampleFormControlInput">Password</label>
+                </div>
+                <div className="d-grid gap-2 col-12 mx-auto">
+                  <button type="submit" className="btn btn-info text-white">Login</button>
+                  <button type="button" className="btn btn-info text-white"onClick={() => {navigate('/forgot-my-password')}}>Forgot my Password</button>
+                </div>
+              </form>
+            </div>
           </div>
-          <div className="mb-3 form-floating">
-            <input type="password" className="form-control" id="password" placeholder='Password' name="password" value={password} onChange={handleInputChange} required  />
-            <label htmlFor="exampleFormControlInput">Password</label>
-          </div>
-          <div className="d-grid gap-2 col-12 mx-auto">
-            <button type="submit" className="btn btn-info text-white">Login</button>
-            <button type="button" className="btn btn-info text-white"onClick={() => {navigate('/forgot-my-password')}}>Forgot my Password</button>
-          </div>
-        </form>
-
-       </div>
+        </div>
+      </div>
     </Layout>
   )
 }

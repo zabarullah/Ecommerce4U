@@ -5,6 +5,8 @@ import { AlertContext } from '../../context/alert.context';
 import Pagination from '../../components/pagination/pagination.component';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CartContext } from '../../context/cart.context';
+import './homePage.styles.css';
+
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -19,7 +21,7 @@ const HomePage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalProducts, setTotalProducts] = useState('')
   const [searchTerm, setSearchTerm] = useState('');
-  const { alert, setAlert } = useContext(AlertContext);
+  const { setAlert } = useContext(AlertContext);
   const { cartItems, addToCart } = useContext(CartContext);
 
   
@@ -196,12 +198,12 @@ const filterProducts = () => {
   };
 
   return (
-    <Layout title="Home Page - Ecommerce 4 U" alert={alert} setAlert={setAlert}>
-      <div className="row mt-3 ms-1">
-        <div className="col-md-3">
-          <h4 className="text-center border-bottom">Filter by Category</h4>
+    <Layout title="Home Page - Ecommerce 4 U">
+      <div className="row mt-3 m-auto">
+        <div className="col-md-4 border mb-4 ">
+          <h4 className="text-center border-bottom mt-3">Filter by Category</h4>
           {categories?.map((category) => (
-            <div key={category._id} className="input-group-text ms-3">
+            <div key={category._id} className="input-group-text ms-3 ">
               <input
                 className="form-check-input"
                 type="checkbox"
@@ -215,14 +217,14 @@ const filterProducts = () => {
             
           ))}
           <div className="d-grid gap-2 col-6 mx-auto mt-2">
-          <button className="btn btn-secondary mb-2" onClick={() => resetFilter('categories')}>
-            Reset Categories
-          </button>
+            <button className="btn btn-secondary mb-2" onClick={() => resetFilter('categories')}>
+              Reset Categories
+            </button>
           </div>
           <h4 className="text-center mt-3 border-bottom">Filter by Price</h4>
-          <div className="input-group-text ms-3">
+          <div className="input-group-text ms-3 ">
             <input 
-              className='form-control'
+              className='form-control '
               type='number'
               placeholder='Min Price'
               value={minPrice}
@@ -243,38 +245,38 @@ const filterProducts = () => {
 
           </div>
           <h4 className="text-center mt-3 border-bottom">Search Products</h4>
-          <div className="input-group-text ms-3">
-          <input
-              className='form-control'
-              type='text'
-              placeholder='Search Products'
-              value={searchTerm}
-              onChange={(e) => {
-                //console.log('Search Term:', e.target.value); working
-                setSearchTerm(e.target.value)
-              }}
-            />
+          <div className="input-group-text ms-3 ">
+            <input
+                className='form-control'
+                type='text'
+                placeholder='Search by name or description'
+                value={searchTerm}
+                onChange={(e) => {
+                  //console.log('Search Term:', e.target.value); working
+                  setSearchTerm(e.target.value)
+                }}
+              />
           </div>
           <div  className="text-center mt-3">
-            <button className="btn btn-primary mt-3" onClick={() => resetFilter('all')}>
+            <button className="btn btn-secondary mt-3" onClick={() => resetFilter('all')}>
                 Reset All Filters
             </button>
           </div>
         </div>
 
-        <div className="col-md-9">
-          <h1 className="text-center">All Products</h1>
-          <div>
-              <h6>{`Number of Products: ${totalProducts}`}</h6>
+        <div className="col-md-8">
+          <div className='border p-1 text-center'>
+            <h1>Products</h1>
+            <h6>{`Number of Products: ${totalProducts}`}</h6>
           </div>
-          <div className="d-flex flex-wrap">
+          <div className="d-flex flex-wrap justify-content-around border-start border-end">
           {filteredProducts && filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
                 <div className="card m-2" style={{ width: '18rem', height: '500px' }} key={product._id}>
                   <div style={{ height: '60%' }}>
                     <img
                       src={`/api/v1/product/product-photo/${product._id}`}
-                      className="card-img-top img-fluid"
+                      className="card-img-top img-fluid product-img"
                       alt={product.name}
                       style={{ height: '100%', objectFit: 'cover' }}
                     />
@@ -282,21 +284,23 @@ const filterProducts = () => {
                       <h5 className="card-title">{product.name}</h5>
                       <p className="card-text">{product.description.substring(0, 30)}...</p>
                       <p className="card-text">£{product.price}</p>
-                      <button
-                        className="btn btn-primary ms-1"
-                        onClick={() => navigate(`/product/${product.slug}`)}
-                      >
-                        More details
-                      </button>
-                      <button
-                        className="btn btn-secondary ms-1"
-                        onClick={() => {
-                          addToCart(product);
-                          setAlert({ type: 'success', message: `${product.name} Added To Cart` });
-                        }}
-                      >
-                        Add To Cart
-                      </button>
+                      <div className="d-flex justify-content-center border-top pt-3 ">
+                        <button
+                          className="btn btn-primary ms-1"
+                          onClick={() => navigate(`/product/${product.slug}`)}
+                        >
+                          More details
+                        </button>
+                        <button
+                          className="btn btn-secondary ms-1"
+                          onClick={() => {
+                            addToCart(product);
+                            setAlert({ type: 'success', message: `${product.name} Added To Cart` });
+                          }}
+                        >
+                          Add To Cart
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -304,16 +308,16 @@ const filterProducts = () => {
             ) : (
               <p>No products found.</p>
             )}
+            {/* Pagination controls */}
+            
           </div>
+            <div className="border mb-4">
+              <div className="d-flex justify-content-center mt-3 ">
+                <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage}/>
+              </div>
+
+            </div>
           
-          {/* Pagination controls */}
-          <div className="d-flex justify-content-center mt-3">
-            <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage}/>
-            {/* <div>
-              <h6>{`Current page: ${currentPage} of total ${totalPages}`}</h6>
-              <h6>{`Number of Products in Category: ${totalProducts}`}</h6>
-            </div> */}
-          </div>
         </div>
       </div>
     </Layout>

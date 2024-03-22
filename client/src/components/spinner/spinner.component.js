@@ -39,7 +39,7 @@ const Spinner = ( { path = "login" } ) => {
 
   return (
     <>
-      <Layout title="Unauthorised - Ecommerce 4 U" alert={alert} setAlert={setAlert}>
+      <Layout title="Unauthorised - Ecommerce 4 U">
         <div className="d-flex flex-column justify-content-center align-items-center" style={{ height: '70vh' }}>
           <p>You are being redirected in {timer} seconds</p>
           <div className="spinner-border text-info" role="status">

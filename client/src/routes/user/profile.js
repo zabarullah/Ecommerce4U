@@ -8,7 +8,7 @@ import Button from '../../components/button/button.component';
 import { useAuth } from '../../context/auth.context';
 
 const Profile = () => {
-  const { name, setName, email, setEmail, phone, setPhone, address, setAddress, password } = useContext(FormContext);
+  const { name, setName, email, setEmail, phone, setPhone, address, setAddress, password, setPassword } = useContext(FormContext);
   const [auth, setAuth] = useAuth();
   const { setAlert } = useContext(AlertContext);
 
@@ -45,7 +45,9 @@ const Profile = () => {
 
       if (response.data?.success) {
         setAlert({ type: 'success', message: response.data.message });
+        //updated the auth with the new user details and spreading the auth we have
         setAuth({ ...auth, user: response.data?.updatedUser });
+        //updating the localstorage so that the app has the same auth across the app components
         let ls = localStorage.getItem("auth");
         ls = JSON.parse(ls);
         ls.user = response.data.updatedUser;
@@ -56,7 +58,7 @@ const Profile = () => {
       }
     } catch (error) {
       console.error(error);
-      setAlert({ type: 'error', message: 'Error updating profile' });
+      setAlert({ type: 'error', message: error.response.data.message });
     }
   };
 
@@ -76,11 +78,11 @@ const Profile = () => {
                   type="text"
                   className="form-control"
                   id="name"
-                  placeholder="Name"
+                  placeholder="Enter Your Name"
                   name="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  required
+                  
                 />
                 <label htmlFor="name">Name</label>
               </div>
@@ -89,11 +91,11 @@ const Profile = () => {
                   type="email"
                   className="form-control"
                   id="email"
-                  placeholder="Email"
+                  placeholder="Enter Your New Email"
                   name="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
+                  
                 />
                 <label htmlFor="email">Email</label>
               </div>
@@ -102,11 +104,11 @@ const Profile = () => {
                   type="text"
                   className="form-control"
                   id="address"
-                  placeholder="Address"
+                  placeholder="Enter Your New Address"
                   name="address"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  required
+                  
                 />
                 <label htmlFor="address">Address</label>
               </div>
@@ -115,14 +117,26 @@ const Profile = () => {
                   type="text"
                   className="form-control"
                   id="phone"
-                  placeholder="Phone"
+                  placeholder="Enter Your New Phone"
                   name="phone"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  required
+                  
                 />
                 <label htmlFor="phone">Phone</label>
               </div>
+              <div className="mb-3 form-floating">
+                  <input
+                    type="password"
+                    className="form-control"
+                    id="exampleInputPassword1"
+                    name="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter Your New Password"
+                  />
+                  <label htmlFor="phone">Password</label>
+                </div>
               <div className="d-grid gap-2 col-12 mx-auto">
                 <Button type="submit">Update Profile</Button>
               </div>

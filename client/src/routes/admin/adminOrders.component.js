@@ -1,53 +1,73 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
-import Layout from '../../components/layout/layout.component';
-import UserMenu from '../../components/UserMenu/userMenu.component';
-import { useAuth } from '../../context/auth.context';
 import axios from 'axios';
+import AdminMenu from '../../components/adminMenu/adminMenu.component';
+import Layout from '../../components/layout/layout.component';
+import { useAuth } from '../../context/auth.context';
+import { AlertContext } from '../../context/alert.context';
 
-const Orders = () => {
+const AdminOrders = () => {
+  const [status, setStatus] = useState(['Not Processed', 'Processing', 'Shipped', 'Delivered', 'Cancelled']);
   const [orders, setOrders] = useState([]);
-  const [totalItems, setTotalItems] = useState(0); // State to hold the total item count
   const [auth] = useAuth(); // Get the Auth state
+  const { setAlert } = useContext(AlertContext);// to set the Alert type and message (alert displayed inside the Layout component)
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const getOrders = async () => {
-      try {
-        const response = await axios.get('/api/v1/order/get-orders', {
-          headers: {
-            Authorization: auth.token
-          },
-        });
-        setOrders(response.data.orders);
-      //  console.log('Orders from backend', response.data);
+  const getOrders = async () => {
+    try {
+      const response = await axios.get('/api/v1/order/get-all-orders', {
+        headers: {
+          Authorization: auth.token
+        },
+      });
+      setOrders(response.data.orders);
+      setAlert({type: 'success', message: response.data.message})
+    //  console.log('Get All Orders for Admin', response.data);
+    } catch (error) {
+      console.log(error);
+      setAlert({type: 'error', message: error.response.data.message})  
+    }
+  };
 
-        // Calculate the total item count
-        let totalCount = 0;
-        response.data.orders.forEach(order => {
-          order.products.forEach(product => {
-            totalCount += product.quantity;
-          });
-        });
-        setTotalItems(totalCount);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  useEffect(() => {
     if (auth?.token) getOrders();
   }, [auth?.token]);
 
+  const handleChange = async(orderId, value) => {
+    try {
+      // console.log('AdminOrderComponent: ', value, orderId)
+      const response = await axios.put(`/api/v1/order/order-status/${orderId}`, 
+      {
+        status: value,
+      },
+      {
+        headers: {
+          Authorization: auth.token,
+        },
+      });
+      setAlert({ type: 'success', message: response.data.message });
+      setTimeout(() => {
+        getOrders();
+      }, 3000);
+  
+    } catch (error) {
+      console.log(error);
+      setAlert({type: 'error', message: error.response.data.message}) 
+    }
+  }
+
   return (
-    <Layout title={"Your Orders"}>
-      <div className="container-fluid p-3 m-3">
-        <div className="row">
-          <div className="col-md-3">
-            <UserMenu />
-          </div>
-          <div className="col-md-9">
-            <h1 className='text-center'>Your Orders</h1>
-            {orders && orders.map((order, i) => (
-              <div key={order._id} className="border shadow mb-3">
+  
+    <Layout title='All Orders Data'>
+      <div className="container-fluid m-3 p-3">
+        <div className="row dashboard">
+            <div className="col-md-3">
+              <AdminMenu />
+            </div>
+            <div className="col-md-9">
+              <h1>All Orders</h1>
+              {orders && orders.map((order, i) => (
+              <div key={order._id} className="border shadow mb-3 w-75">
                 <table className='table'>
                   <thead>
                     <tr>
@@ -62,12 +82,27 @@ const Orders = () => {
                   <tbody>
                     <tr>
                       <td>{i + 1}</td>
-                      <td>{order.status}</td>
+                      <td>
+                        { //order.status
+                          <select 
+                            className="form-select mb-3" 
+                            onChange={(e) => handleChange(order._id, e.target.value)}
+                            defaultValue={order?.status}
+                          >
+                            {
+                              status.map((s, i) => (
+                                <option key={i} value={s}>
+                                  {s}
+                                </option>
+                              ))
+                            }
+                          </select>
+                        }
+                      </td>
                       <td>{order.user.name}</td>
                       <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                       <td>{order.payment.success === true ? "Success" : "Failed"}</td>
-                      <td>{totalItems}</td>
-                      
+                      <td>{order.products.reduce((acc, cur) => acc + cur.quantity, 0)}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -82,7 +117,7 @@ const Orders = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {console.log('Checking user orders placed data: ',order.products)}
+                    {/* {console.log('Checking user orders placed data: ',order.products)} */}
                     {order.products.map((item, i )=> (
                     <tr key={item._id} style={{ height: '100px', borderBottom: '1px solid #dee2e6' }}>
                         <td style={{ height: '100%', verticalAlign: 'middle',cursor: 'pointer'  }}>
@@ -109,12 +144,12 @@ const Orders = () => {
                 </tbody>
                 </table>
               </div>
-            ))}
-          </div>
+              ))}              
+            </div>
         </div>
       </div>
     </Layout>
-  );
+  )
 }
 
-export default Orders;
+export default AdminOrders;

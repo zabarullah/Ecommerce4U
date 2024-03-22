@@ -1,7 +1,7 @@
 import React, { Fragment, useContext } from 'react'
 import { NavLink, Link } from 'react-router-dom';
 import { useAuth } from '../../context/auth.context';
-import { FaShopify } from 'react-icons/fa';
+import { FaShopify, FaShoppingCart } from 'react-icons/fa';
 import './header.styles.css';
 import { AlertContext } from '../../context/alert.context';
 import useCategoryHook from '../../hooks/useCategoryHook';
@@ -35,7 +35,7 @@ const Header = () => {
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
-            <Link to='/' className="navbar-brand">{<FaShopify />} Ecommerce 4 U</Link>
+            <Link to='/' className="navbar-brand">{<FaShopify size={24} />} Ecommerce 4 U</Link>
               <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li className="nav-item me-2">
                   <NavLink to='/' className="nav-link">Home</NavLink>
@@ -43,7 +43,7 @@ const Header = () => {
                 
                 <li className="nav-item dropdown me-2">
                   <NavLink
-                    className='nav-link dropdown-toggle'
+                    className='nav-link'
                     to='/categories'
                     data-bs-toggle= 'dropdown'
                   >
@@ -80,10 +80,10 @@ const Header = () => {
                 ) : (
                   <>
                   <li className="nav-item dropdown me-2">
-                    <NavLink className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <NavLink className="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       {auth?.user.name}
                     </NavLink>
-                    <ul className="dropdown-menu nav-item bg-info me-2">
+                    <ul className="dropdown-menu nav-item bg-info me-2 dropdown-menu-end">
                       <li><NavLink to={`/dashboard/${
                         auth?.user?.role === 1 ? 'admin' : 'user'
                         }`} className="dropdown-item">Dashboard</NavLink></li>
@@ -95,14 +95,19 @@ const Header = () => {
                 }
                 <li className="nav-item dropdown me-2">
                 <NavLink
-                  className="nav-link dropdown-toggle"
+                  className="nav-link"
                   to="/cart"
                   id="navbarDropdown"
                   role="button"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  Cart {getTotalQuantity() > 0 && `(${getTotalQuantity()})`}
+                  <FaShoppingCart size={24} />
+                  <span className="cart-icon">
+                    {getTotalQuantity() > 0 && (
+                      <span className="cart-count">{getTotalQuantity()}</span>
+                    )}
+                  </span>
                 </NavLink>
                 <ul className="dropdown-menu dropdown-menu-end cart-dropdown bg-info" aria-labelledby="navbarDropdown">
                   {cartItems.length === 0 ? (
@@ -122,7 +127,7 @@ const Header = () => {
                               <img
                                 src={`/api/v1/product/product-photo/${item._id}`}
                                 alt={item.name}
-                                className="img-fluid rounded-start rounded-end shadow"
+                                className="img-fluid rounded-start rounded-end shadow product-img"
                                 width="50px"
                               />
                             </div>

@@ -21,7 +21,7 @@ const CreateProduct = () => {
     const [shipping, setShipping] = useState('');
     const [photo, setPhoto] = useState('');
     const [auth] = useAuth(); // Get the Auth state
-    const { alert, setAlert } = useContext(AlertContext);// to set the Alert type and message (alert displayed inside the Layout component)
+    const { setAlert } = useContext(AlertContext);// to set the Alert type and message (alert displayed inside the Layout component)
 
 
     //get all Categories
@@ -78,7 +78,7 @@ const CreateProduct = () => {
 
 
   return (
-    <Layout title="Dashboard- Create Product" alert={alert} setAlert={setAlert}>
+    <Layout title="Dashboard- Create Product">
         <div className="container-fluid m-3 p-3">
             <div className="row">
                 <div className="col-md-3">

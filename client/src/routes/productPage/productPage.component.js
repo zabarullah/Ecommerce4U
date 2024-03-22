@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../../context/cart.context';
 import { AlertContext } from '../../context/alert.context';
 
+import './productPage.styles.css'
+
 const ProductPage = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -82,7 +84,7 @@ const ProductPage = () => {
                         <img
                             src={`/api/v1/product/product-photo/${product._id}`}
                             alt={product.name}
-                            className="img-fluid rounded-start rounded-end shadow"
+                            className="img-fluid rounded-start rounded-end shadow product-img"
                             width="300px"
                         />
                     </div>

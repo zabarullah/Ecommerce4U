@@ -21,6 +21,7 @@ import UpdateProduct from './routes/admin/updateProduct.component';
 import ProductPage from './routes/productPage/productPage.component';
 import CategoriesPage from './routes/categories/categoriesPage.component';
 import Checkout from './routes/checkout/checkout.component';
+import AdminOrders from './routes/admin/adminOrders.component';
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
             <Route exact path='admin/product/:slug' element={<UpdateProduct />}/>
             <Route exact path='admin/products' element={<Products />}/>
             <Route exact path='admin/users' element={<Users />}/>
+            <Route exact path='admin/orders' element={<AdminOrders />}/>
         </Route>
 
         <Route exact path='/aboutus' element={<AboutUs />}/>

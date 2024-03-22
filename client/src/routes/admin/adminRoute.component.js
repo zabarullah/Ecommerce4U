@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom';
 import axios from 'axios';
 import Spinner from '../../components/spinner/spinner.component';
 
-// will give access to protected routes only if a user auth exists, and is Admin and a auth.token exists.
+// will give access to protected routes only if a user auth exists, and is Admin and an auth.token exists.
 const AdminRoute = () => {
   const [ok, setOk] = useState(false); // local state ok is set as per the respose from the server, inorder to render the correct component
   const [auth] = useAuth();
