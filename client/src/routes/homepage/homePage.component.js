@@ -69,9 +69,6 @@ const HomePage = () => {
         setProducts(response.data.products);
         setTotalPages(response.data.totalPages);
         setTotalProducts(response.data.total);
-        
-
-        //console.log('The search term is ', searchTerm)
       } else {
         setAlert({ type: 'error', message: 'Error In getting Products' });
       }
@@ -111,11 +108,6 @@ const HomePage = () => {
   }, [totalProducts]);
 
   useEffect(() => {
-    console.log('Home Pages cart:',cartItems)
-  }, [cartItems]);
-
-
-  useEffect(() => {
     // Update the filtered products whenever the dependencies change
     if (products) {
       const updatedFilteredProducts = filterProducts();
@@ -124,52 +116,48 @@ const HomePage = () => {
     // eslint-disable-next-line
   }, [checkedCategories, minPrice, maxPrice, searchTerm, products]);
   
-  
   const handleCategoryChecked = (categoryId) => {
     const isChecked = checkedCategories.includes(categoryId);
     if (isChecked) {
       // if the Category is already checked, remove it(uncheck)
       setCheckedCategories((prevState) => prevState.filter((id) => id !== categoryId));
-      console.log('Checked Categories after handleCategoryChecked:', checkedCategories);
     } else {
       // Category is not checked, add it(check)
       setCheckedCategories((prevState) => [...prevState, categoryId]);
-      console.log('Checked Categories after handleCategoryChecked:', checkedCategories);
     }
-  
     // Reset page to 1 when categories change
     setCurrentPage(1);
   };
   
 
-// Filters products based on checked or unchecked categories and/or price range
-const filterProducts = () => {
-  // If no products, return an empty array
-  if (!products || products.length === 0) {
-    return [];
-  }
+  // Filters products based on checked or unchecked categories and/or price range
+  const filterProducts = () => {
+    // If no products, return an empty array
+    if (!products || products.length === 0) {
+      return [];
+    }
 
-  // If no categories are checked and no price range, show all products
-  if (checkedCategories.length === 0 && !minPrice && !maxPrice) {
-    return products;
-  }
+    // If no categories are checked and no price range, show all products
+    if (checkedCategories.length === 0 && !minPrice && !maxPrice) {
+      return products;
+    }
 
-  // Filter products based on checked categories and/or Price range
-  return products.filter((product) => {
-    // Check if there are no categories selected or if the product is in the selected categories.
-    // We have to check the first condition because if we don't have any categories checked, the second condition will return false,
-    // which excludes all products. To return true, add the first condition.
-    const isInCategories =
-      checkedCategories.length === 0 || (product.category && checkedCategories.includes(product.category._id));
+    // Filter products based on checked categories and/or Price range
+    return products.filter((product) => {
+      // Check if there are no categories selected or if the product is in the selected categories.
+      // We have to check the first condition because if we don't have any categories checked, the second condition will return false,
+      // which excludes all products. To return true, add the first condition.
+      const isInCategories =
+        checkedCategories.length === 0 || (product.category && checkedCategories.includes(product.category._id));
 
-    // Check if there's no minPrice specified or if the product price is greater than or equal to minPrice,
-    // and there's no maxPrice specified or if the product price is less than or equal to maxPrice
-    const isInPriceRange = (!minPrice || product.price >= minPrice) && (!maxPrice || product.price <= maxPrice);
+      // Check if there's no minPrice specified or if the product price is greater than or equal to minPrice,
+      // and there's no maxPrice specified or if the product price is less than or equal to maxPrice
+      const isInPriceRange = (!minPrice || product.price >= minPrice) && (!maxPrice || product.price <= maxPrice);
 
-    // Return true if the product is in the selected categories and in the specified price range
-    return isInCategories && isInPriceRange;
-  });
-};
+      // Return true if the product is in the selected categories and in the specified price range
+      return isInCategories && isInPriceRange;
+    });
+  };
 
   
   // separate variable filteredProducts so that it can be mapped to display the filtered products
@@ -252,7 +240,6 @@ const filterProducts = () => {
                 placeholder='Search by name or description'
                 value={searchTerm}
                 onChange={(e) => {
-                  //console.log('Search Term:', e.target.value); working
                   setSearchTerm(e.target.value)
                 }}
               />

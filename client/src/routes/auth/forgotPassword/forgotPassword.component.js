@@ -27,14 +27,10 @@ const ForgotMyPassword = () => {
         default:
           break;
       }
-
-    //   console.log(`Field ${name}`, value);
     };
 
     const handleSubmit = async (e) => {
       e.preventDefault();
-    //   console.log({email, memorableWord, newpassword});
-      
       try {
         const res = await axios.post("/api/v1/auth/forgot-my-password", {
             email,

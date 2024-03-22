@@ -35,7 +35,6 @@ const SignUp = () => {
         default:
           break;
       }
-      // console.log(`Field ${name}`, value);
     };
 
     const handleSubmit = async (e) => {
@@ -52,7 +51,6 @@ const SignUp = () => {
           });
         
           if (res && res.data.success) {
-            // console.log(res.data);
             setAlert({ type: 'success', message: res.data.message });
             navigate('/login', { state: { type: 'success', message: res.data.message } });
 

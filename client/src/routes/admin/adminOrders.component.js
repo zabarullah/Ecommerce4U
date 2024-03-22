@@ -22,7 +22,6 @@ const AdminOrders = () => {
       });
       setOrders(response.data.orders);
       setAlert({type: 'success', message: response.data.message})
-    //  console.log('Get All Orders for Admin', response.data);
     } catch (error) {
       console.log(error);
       setAlert({type: 'error', message: error.response.data.message})  
@@ -35,7 +34,6 @@ const AdminOrders = () => {
 
   const handleChange = async(orderId, value) => {
     try {
-      // console.log('AdminOrderComponent: ', value, orderId)
       const response = await axios.put(`/api/v1/order/order-status/${orderId}`, 
       {
         status: value,
@@ -117,7 +115,6 @@ const AdminOrders = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {/* {console.log('Checking user orders placed data: ',order.products)} */}
                     {order.products.map((item, i )=> (
                     <tr key={item._id} style={{ height: '100px', borderBottom: '1px solid #dee2e6' }}>
                         <td style={{ height: '100%', verticalAlign: 'middle',cursor: 'pointer'  }}>

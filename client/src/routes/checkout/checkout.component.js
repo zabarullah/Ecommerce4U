@@ -49,7 +49,7 @@ const CheckoutPage = () => {
         cartTotal: getCartTotal(),
         user: auth?.user,
       });
-      console.log('Payment Response: ', response)
+      // console.log('Payment Response: ', response)
       
       
       setLoading(false);
@@ -67,8 +67,8 @@ const CheckoutPage = () => {
 
   useEffect(() => {
     getToken();
-    console.log('FE - Cart: ', cartItems)
-    console.log('FE- User: ', auth?.user)
+    // console.log('FE - Cart: ', cartItems)
+    // console.log('FE- User: ', auth?.user)
   }, [auth?.token])
 
   return (

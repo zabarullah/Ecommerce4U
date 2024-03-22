@@ -7,7 +7,6 @@ export const AuthProvider = ({children}) => {
         // gets local auth state from local storage
         const storedAuth = localStorage.getItem('auth');
         // if auth state exists in local storage, then it will parse it and use the auth state otherwise it will be set to default user: null etc
-//        console.log('authProvider kicked in: ', storedAuth);
         return storedAuth ? JSON.parse(storedAuth) : { user: null, token: "" };
     });
 

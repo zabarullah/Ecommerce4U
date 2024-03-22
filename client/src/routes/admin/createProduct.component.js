@@ -64,11 +64,10 @@ const CreateProduct = () => {
             }
           },
           );
-          console.log('response log', response)
+
           if (response.data?.success) {
               setAlert({type: 'success', message: response.data.message}); 
               navigate('/dashboard/admin/products');  
-           //   console.log('Alert data: ', alert)
           } 
         } catch (error) {
           console.log(error);

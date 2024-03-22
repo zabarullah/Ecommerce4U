@@ -39,8 +39,6 @@ const UpdateProduct = () => {
                 setPrice(product.price);
                 setQuantity(product.quantity);
                 setShipping(product.shipping);
-                //console.log(response)
-
             }
         } catch (error) {
             console.log(error);   
@@ -90,7 +88,7 @@ const UpdateProduct = () => {
             }
           },
           );
-          console.log('response log', response)
+
           if (response.data?.success) {
               setAction(null);
               setAlert({type: 'success', message: response.data.message}); 

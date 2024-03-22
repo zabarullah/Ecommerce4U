@@ -82,7 +82,7 @@ const Orders = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {console.log('Checking user orders placed data: ',order.products)}
+                    {/* {console.log('Checking user orders placed data: ',order.products)} */}
                     {order.products.map((item, i )=> (
                     <tr key={item._id} style={{ height: '100px', borderBottom: '1px solid #dee2e6' }}>
                         <td style={{ height: '100%', verticalAlign: 'middle',cursor: 'pointer'  }}>

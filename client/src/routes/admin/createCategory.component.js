@@ -79,7 +79,7 @@ const CreateCategory = () => {
                 }               
 
             } else {
-                console.log('No category selected');
+                setAlert({type: 'error', message: "No category selected"});
             }
         } catch (error) {
             console.log(error);
@@ -120,18 +120,17 @@ const CreateCategory = () => {
         try {
             if (action !== null) {
                 if (action === 'handleUpdate') {
-                    console.log('handle update action executed')
-                    return handleUpdate(e); // Assuming handleUpdate is an async function
+                    return handleUpdate(e); 
                 } else if (action === 'handleDelete') {
-                    console.log('handle delete action executed')
-                    return handleDelete(e); // Assuming handleDelete is an async function
+                    return handleDelete(e); 
                 } 
             } else {
-                console.log('category is not selected')
+                setAlert({type: 'error', message: "No category selected"});
             }
             
         } catch (error) {
             console.log(error);
+            setAlert({type: 'error', message: error.response.data.message});
         }
     }
 
