@@ -2,13 +2,17 @@ import productModel from "../models/product.model.js";
 import fs from "fs";
 import slugify from "slugify";
 import categoryModel from "../models/category.model.js";
+import orderModel from "../models/order.model.js";
+
+import braintree from "braintree"
+import dotenv from 'dotenv';
+
+
 
 export const createProductController = async (req, res) => {
     try {
-        console.log('Backend - createProduct Controller Triggered');
         const { name, description, category, quantity, price, shipping } = req.fields;
         const { photo } = req.files; 
-        //console.log(name, description, category, quantity, price, shipping);
         //Validation for missing fields which will be checked against the requiredFields array using the filter method.
         const requiredFields = ["name", "description", "category", "quantity", "price","shipping"];
         const missingFields = requiredFields.filter(field => !req.fields[field]);
@@ -78,10 +82,6 @@ export const getProductController = async (req, res) => {
         const searchRegex = new RegExp(req.query.searchTerm, 'i'); // 'i' for case-insensitive
         searchFilter.$or = [{ name: searchRegex }, { description: searchRegex }];
         }
-      
-       console.log('Search Term:', req.query.searchTerm);
-        console.log('Search Filter:', searchFilter);
- 
 
       const products = await productModel
         .find({ ...categoryFilter, ...priceFilter, ...searchFilter  })
@@ -264,4 +264,62 @@ export const updateProductController = async (req, res) => {
           message: 'Error Updating Product'
         })          
     }
+}
+
+//Braintree Payment Controllers
+
+//Payment Gateway
+dotenv.config();
+var gateway = new braintree.BraintreeGateway({
+  environment: braintree.Environment.Sandbox,
+  merchantId: process.env.BRAINTREE_MERCHANT_ID,
+  publicKey: process.env.BRAINTREE_PUBLIC_KEY,
+  privateKey: process.env.BRAINTREE_PRIVATE_KEY,
+});
+
+//Token
+export const braintreeTokenController = async (req, res) => {
+  try {
+    gateway.clientToken.generate({}, function(err,response){
+      if(err) {
+        res.status(500).send(err);
+      } else {
+        //clientToken send as a response
+        res.send(response)
+      }
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+//Payment
+export const braintreePaymentsController = async (req, res) => {
+  try {
+    const {cartItems, nonce, cartTotal, user} = req.body;
+
+    let newTransaction = gateway.transaction.sale({
+      amount: cartTotal,
+      paymentMethodNonce: nonce,
+      options: {
+        submitForSettlement: true,
+      }
+    },
+    async function (error, result) {
+      if(result) {
+        const order = await orderModel({
+          products: cartItems,
+          payment: result,
+          user: user._id,
+        }).save();
+
+        res.json({ ok: true })
+      } else {
+        res.status(500).send(error);
+      }
+    }
+    )
+  } catch (error) {
+    console.log(error);
+  }
 }
